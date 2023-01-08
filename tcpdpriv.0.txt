@@ -1,0 +1,224 @@
+TCPDPRIV(1)               BSD General Commands Manual              TCPDPRIV(1)
+
+NAME
+     tcpdpriv - remove private information from a tcpdump -w file
+
+SYNOPSIS
+     tcpdpriv [-a [[hh:]mm:]ss] [-A {0|1|2|50|99}] [-c count]
+              [-C {0|1|2|3|4|...|32|99}] [-F file] [-i interface]
+              [-M {0|10|20|70|80|90|99}] [-O] [-p] [-P {0|1|99}] [-q]
+              [-r inputfile] [-s snaplen] [-S {0|1|99}] [-T {0|1|99}]
+              [-U {0|1|99}] [-w outputfile] [expression]
+     tcpdpriv [-C 4] [-M 20] [-P 99] [-w outputfile] [-r inputfile]
+
+DESCRIPTION
+     Tcpdpriv removes sensitive information from a packet trace, replacing it
+     with contrived information from which the sensitive information cannot be
+     reconstructed.  By removing the sensitive information, the output of
+     tcpdpriv may be shared with others (for debugging or network analysis,
+     say).
+
+     In general, data which is not otherwise processed by tcpdpriv is deleted.
+     For example, the data portion of a datagram is not included in the output
+     file.
+
+     When a header is changed, the checksum for that header is also updated to
+     reflect the change in header data values.
+
+     The various options provide different levels of privacy/security for dif-
+     ferent portions of IP datagrams.  The numbers refer to the different lev-
+     els of security -- in general, smaller numbers are more secure.
+
+     The number zero (0) is the default for each of the options.  This pro-
+     vides the most secure output file, but may delete information helpful to
+     those interested in using the output.
+
+     The number ninety-nine (99) generally means "release the information as
+     is".  This level is available for IP unicast and multicast addresses,
+     classness, TCP and IP options and TCP and UDP port numbers.
+
+     The payload inside an IP protocol type 4 ("ipip" or "ip-encaps") datagram
+     is assumed to be an encapsulated IP datagram and is transformed in the
+     same manner as the outer (encapsulating) IP datagram.
+
+     The second form is an example that protects IP address information, but
+     releases TCP and UDP port numbers as well as retaining information about
+     which packets were (IP-level) multicast packets.  This is a safe manner
+     in which to run tcpdpriv.
+
+     -a          Exit after [[hh:]mm:]ss time has expired.
+
+     -A          How IP addresses should be treated.  All-zeros and all-ones
+                 addresses are never changed.  Level 0 maps different
+                 addresses to integers (counting from 1).  Level 1 maps the
+                 upper and lower 16 bits, separately, to integers (counting
+                 from 1); the upper and lower maps are independent (so, the
+                 address 128.130.128.130 may be mapped to something like
+                 0.3.0.28, eg, with the upper and lower 16 bits having differ-
+                 ent values).  Level 2 maps each byte of the address sepa-
+                 rately (again, counting from 1); each byte map is indepen-
+                 dent.
+
+                 Level 50 is more complicated (though more useful in certain
+                 situations).  With level 50, if two of the original addresses
+                 were equal in the most significant N bits, then these two
+                 addresses will map to private addresses that are similarly
+                 equal in the most significant N bits.  (This feature can be
+                 useful for using trace datasets to study the dynamics of var-
+                 ious data structures for forwarding tables, for example.)
+
+                 NOTE:  level 50 reveals more information about a site's local
+                 network topology than the other levels.  This could be of
+                 concern to some sites (but is probably not a concern for most
+                 sites).  (The document 'Thoughts on How to Mount an Attack on
+                 tcpdpriv's "-A50" Option...', included with the tcpdpriv
+                 source distribution, discusses some of the issues related to
+                 level 50.)
+
+                 Level 99 passes IP addresses through unchanged.
+
+     -c          Exit after receiving count packets.
+
+     -C          How the "classness" of input and output IP addresses should
+                 be related.  (In "classic IP", there was a notion of "class-
+                 ness" associated with IP addresses; an IP address was class
+                 A, class B, class C, or class D depending on the first most
+                 significant bits of the IP header.)  Level 0 implies that no
+                 class information is carried through.  Level 1 implies that
+                 class A addresses are mapped into class A addresses; Level 2
+                 implies that in addition, class B addresses are mapped into
+                 class B addresses; Level 3 implies that in addition, class C
+                 addresses are mapped into class C addresses; Level 4 implies
+                 that in addition, class D addresses (multicast) are mapped
+                 into class D addresses.
+
+                 (In fact, the -C flag actually preserves leading one (1)
+                 bits; thus, level 32, for example, will map class A, B, C,
+                 and D (respectively) addresses in to class A, B, C, and D
+                 (respectively) addresses and will also map the all-ones IP
+                 broadcast address into in an all-ones IP addresss.  Level 99
+                 is a synonym for level 32.)
+
+     -F          Use file as input for the filter expression.  An additional
+                 expression given on the command line is ignored.
+
+     -i          Listen on interface.  If unspecified, tcpdpriv searches the
+                 system interface list for the lowest numbered, configured up
+                 interface (excluding loopback).
+
+     -M          How multicast addresses are mapped:  level 0 implies map
+                 using the -A and -C option values; level 99 passes multicast
+                 addresses through unchanged.  The rest of the levels relate
+                 to the scoping of multicast datagrams: level 10 passes multi-
+                 cast addresses in globally-scoped datagrams through
+                 unchanged; level 20 passes multicast addresses in continent-
+                 local datagrams through unchanged; level 70 passes multicast
+                 addresses in site-local datagrams through unchanged; level 80
+                 passes multicast addresses in link-local datagrams through
+                 unchanged; level 90 passes multicast addresses in node-local
+                 datagrams through unchanged.  (Note that in IPv4, "scoping"
+                 is determined by TTL values.)
+
+     -O          Do not run the packet-matching code optimizer.  This is use-
+                 ful only if you suspect a bug in the optimizer.
+
+     -p          Do not put the interface into promiscuous mode.  Note that
+                 the interface might be in promiscuous mode for some other
+                 reason; hence, `-p' cannot be used as an abbreviation for
+                 `ether host {localhost} or broadcast'.
+
+     -P          Set the mapping for both TCP and UDP port numbers.  Level 0
+                 maps the 16-bit port numbers to a single integer (see the -A
+                 option above).  Level 1 maps each 8-bit byte in the port num-
+                 ber to a single integer.
+
+     -q          Normally, tcpdpriv logs its command-line parameters and a
+                 summary at the end of execution to standard error.  The -q
+                 flag suppresses these messages.
+
+     -r          Read packets from inputfile (which was created with the -w
+                 option of tcpdump(1) ). Standard input is used if inputfile
+                 is ``-''.
+
+     -s          Snarf snaplen bytes of data from each packet rather than the
+                 default of 88 (with NIT, the minimum is actually 96).  See
+                 the tcpdump(1) man page for more information.
+
+     -S          How IP and TCP options should be treated.  Level 0 replaces
+                 all options with NOPs (0x01, in both cases).  Level 1 leaves
+                 all the options alone.
+
+     -T          Set the mapping for just the TCP port numbers.  See the -P
+                 option for details.
+
+     -U          Set the mapping for just the UDP port numbers.  See the -P
+                 option for details.
+
+     -w outputfile
+                 Specifies the output file, which will look as if it had been
+                 generated by the tcpdump(1) command, using its -w option.  If
+                 this argument is not provided, the output will be written to
+                 standard output (which is not allowed to be a terminal
+                 device).
+
+     expression  selects which packets will be processed (packets not matching
+                 expression will be deleted).  See the tcpdump(1) man page for
+                 details on the format of expression.
+
+SEE ALSO
+     netstat(1), tcpdump(1), tcpslice(1), pcap(3), mount(8).
+
+      'Thoughts on How to Mount an Attack on tcpdpriv's "-A50" Option...'
+     (included with the tcpdpriv source distribution).
+
+HISTORY
+     The tcpdpriv command was written at Ipsilon Networks in 1996.  Many
+     thanks to Vern Paxson <vern@ee.lbl.gov> for his help/suggestions during
+     tcpdpriv's development.  Thanks also to K. Claffy <kc@nlanr.net> and Tatu
+     Ylonen <tatu@ssh.com> for contributions and clarifications to the secu-
+     rity aspects of tcpdpriv.  Notwithstanding the help from these people,
+     all bugs remain the responsibility of the author (but, see the disclaimer
+     below).
+
+     Portions of tcpdpriv (and this man page) are extracted from tcpdump(1)
+     (available from ftp://ftp.ee.lbl.gov/tcpdump.tar.Z).
+
+DIAGNOSTICS
+     Various, including complaining if "netstat -in" or "mount" are not acces-
+     sible (these are used in seeding the random number generator).
+
+DISCLAIMER
+     THIS SOFTWARE IS PROVIDED BY IPSILON NETWORKS, INC., ``AS IS'' AND ANY
+     EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+     WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+     DISCLAIMED.  IN NO EVENT SHALL IPSILON NETWORKS, INC., BE LIABLE FOR ANY
+     DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAM-
+     AGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+     SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOW-
+     EVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+     LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+     OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+     SUCH DAMAGE.
+
+BUGS
+     Link-level headers are passed through unchanged.
+
+     Tcpdpriv should probably preserve the all-zeroes and all-ones addresses.
+
+     It would be nice if tcpdpriv could retain subnet broadcast information.
+
+     Tcpdpriv supports only SLIP, PPP, Ethernet, FDDI, and the NULL data
+     links.
+
+     FDDI is only supported on systems that have the include file
+     <netinet/if fddi.h>.
+
+     There should be some way to allow the various pre-defined multicast
+     addresses (such as "all-nodes", etc.) to be passed through unchanged.
+
+     There is a bug in tcpdump(1) which makes it unable to filter a 0.x.y.z
+     address.  Tcpdpriv attempts to avoid generating addresses in this format.
+     However, with "-A50", it is possible that tcpdpriv will, in fact, gener-
+     ate such an address.
+
+4.3 Berkeley Distribution        July 4, 1996        4.3 Berkeley Distribution

@@ -1,0 +1,29 @@
+#!/bin/sh
+
+# cheap hack to make things portable (but, note this is csh!)
+
+gcc=
+SVR4=
+OSF1=
+
+if gcc -v > /dev/null; then
+    gcc='-e s/^#have-gcc#//'
+fi
+
+if [ "`uname -s`" = "SunOS" ]; then
+    if [ "`uname -r | sed 's/\..*//'`" = "5" ]; then
+	SVR4='-e s/^#have-SVR4#//'
+    fi
+fi
+
+if [ "`uname -s`" = "OSF1" ]; then
+    OSF1='-e s/^#have-OSF1#//'
+fi
+if [ "$gcc" = "" ]; then
+    echo "compile errors?  maybe because you need an ANSI-compatible compiler like gcc..."
+fi
+
+VERSION="-e s/#__VERSION__#/`cat VERSION`/"
+
+sed -e 's/^#have-none#//' $gcc $SVR4 $OSF1 $VERSION Makefile.in > Makefile
+chmod ug+w Makefile
