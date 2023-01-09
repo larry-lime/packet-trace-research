@@ -1,0 +1,90 @@
+<html>
+<head>
+  <title> Program for Eliminating Confidential Information from Traces </title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+<body>
+<!--$Id: tcpdpriv.vtml,v 1.4 1996/08/01 00:38:07 minshall Exp $ -->
+<h1>
+<em>TCPDPRIV</em>
+</h1>
+<dl>
+<dt>
+<b>Description</b>
+<dd>
+<em>Tcpdpriv</em> is program for eliminating confidential information
+from packets collected on a network interface (or,
+from trace files created using the <b>-w</b> argument to
+<a href=ftp://ftp.ee.lbl.gov/tcpdump.tar.Z><em>tcpdump</em></a>).
+<dt>
+<b>Requirements</b>
+<dd>
+Tcpdpriv is fairly modest in its requirements.  It does, however,
+require the <a href=ftp://ftp.ee.lbl.gov/libpcap.tar.Z><em>packet capture
+library (libpcap)</em></a>.
+<dt>
+<b>Limitations</b>
+<dd>
+<ul>
+<li>
+<em>Tcpdpriv</em> works on SunOS, Solaris, FreeBSD and Linux, and
+should port to other systems fairly easily, although there
+have been problems reported porting to Digital Unix running on Alpha
+processors.
+<li>
+Link-level headers are passed through unchanged.
+<li>
+It would be nice if <em>tcpdpriv</em> could retain subnet
+broadcast information.
+<li>
+The <i>-A50</i> option can be a security concern for some sites (but
+is probably not a concern for most sites).  A short
+<a href=attack50/attack50.html>analysis</a>
+of the
+security issues with the <i>-A50</i> option is available.
+</ul>
+<dt>
+<b>History</b>
+<dd>
+<ul>
+<li>Written by Greg Minshall of Ipsilon Networks, Inc., August 1996
+<li>Small corrections for Linux by <A
+    HREF="http://www.ethereal.com/~gerald/">Gerald Combs</A> of
+    Ethereal.com, January 1999
+<li>Added <kbd>-S 1</kbd> option to leave the TCP and IP options intact,
+    all-zeros and all-ones addresses preserved, <KBD>configure</KBD>
+    converted from tcsh to sh, makefile revised, distribution file
+    converted to .tar.gz, this page updated by <a
+    href="http://fly.isti.cnr.it/">Francesco Potortì</a>, February 2004.
+<dt>
+<b>Version</b>
+<dd>
+The current release is 1.1.11, dated 2004-02-05.
+<dt>
+<b>Restrictions</b>
+<dd>
+The software is copyrighted by Ipsilon Networks, Inc. under an
+"old BSD-style" copyright, including the advertising clause.
+See the beginning of the source file
+<em>tcpdpriv.c</em> for details.
+This copyright essentially means you can redistribute
+the software freely, provided you keep the authorship information intact
+and you mention Ipsilon Networks in all advertising materials.<br>
+In 1997 Ipsilon Networks was bought by Nokia.
+<dt>
+<b>Documentation</b>
+<dd>
+A <a href=tcpdpriv.0.txt>man page</a>.
+<dt>
+<b>Distribution</b>
+<dd>
+Available in
+<a href="tcpdpriv-1.1.11.tar.gz"> gzipped <em>tar</em></a> format.
+</dl>
+</body></html>
+
+<!--
+Local variables:
+mode: html
+End:
+-->

@@ -1,0 +1,181 @@
+\documentclass[10pt,onecolumn]{article}
+\usepackage{ifthen}
+
+\flushbottom
+
+\setlength{\parskip}{1ex}
+
+\setlength{\textheight}{220mm}%         {9.5in}
+\setlength{\topmargin}{-5mm}%           {-13mm}
+%\setlength{\headheight}{0in}
+%\setlength{\headsep}{0in}
+\setlength{\textwidth}{175mm}%          {189mm}
+\setlength{\oddsidemargin}{-0.2in}%     {-0.5in}
+\setlength{\columnsep}{4mm}
+
+\renewcommand{\topfraction}{.9}
+\renewcommand{\bottomfraction}{.9}
+\renewcommand{\textfraction}{.1}
+\renewcommand{\floatpagefraction}{.8}
+\renewcommand{\dbltopfraction}{.9}
+\renewcommand{\dblfloatpagefraction}{.8}
+\renewcommand{\floatsep}{0mm}
+\renewcommand{\textfloatsep}{4mm}%       {2mm}
+\renewcommand{\dbltextfloatsep}{4mm}%    {2mm}
+
+% \renewcommand{\baselinestretch}{1.4}
+% \renewcommand{\textfloatsep}{8mm}
+% \renewcommand{\dbltextfloatsep}{8mm}
+
+\begin{document}
+
+\title{Thoughts on How to Mount an Attack on tcpdpriv's ``-A50'' Option...}
+
+
+\maketitle
+
+\begin{abstract}
+tcpdpriv(1) provides a mechanism for outputting \emph{randomized} IP
+addresses (using the \emph{-A50} option).
+By so doing, the amount of information encoded in the
+outputted IP addresses is larger than the amount of information encoded
+in the options that output IP addresses as sequential numbers (but,
+less than the amount of information encoded in the \emph{-A99} option
+that causes the IP addresses on the output side to be the same as those
+on the input side).  This document discusses an approach that might be
+used to \emph{crack} an output file which has been encoded with the
+\emph{-A50} option.
+\end{abstract}
+
+\section{Acknowledgement and DISCLAIMER}
+
+The following is primarily the work of Tatu Ylonen \texttt{<ylo@ssh.fi>}, and
+is provided here with the following:
+
+\emph{
+DISCLAIMER:
+THIS INFORMATION IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED
+WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED.  IN NO EVENT SHALL TATU YLONEN BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS INFORMATION,
+EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+}
+
+
+\section{Overview}
+
+The coding produced by the \emph{-A50} option is good enough to
+keep Joe Random Hacker out, but not
+necessarily good enough to keep governments or well-informed experts
+from determining where the data was taken from.  Note that once
+you have accurately located a single machine, you know quite
+accurately the addresses of other machines on the local network.
+You can also make guesses like ``I bet the external gateway (which
+you can easily recognize from traffic patterns, as well as from
+having e.g. cisco's hardware ethernet address) has either address
+.1 or .254'', etc., and guess quite a bit of the remaining information.
+Also, it is quite common to have the name server at .1.
+
+\section{The Attack}
+
+Suppose you wanted to mount a large-scale attack on IP addresses
+randommized with the \emph{-A50} option.  You can fairly easily
+\begin{itemize}
+\item get addresses of most domain name servers in the world
+     (have a robot scan the name server hierarchy)
+\item get addresses of most WWW servers in the world
+     (have a robot scan the web space, like altavista now does)
+\item if you run a major WWW server, you can get addresses of lots of
+    WWW cache servers
+     (extract from WWW logs)
+\item get addresses of news servers
+     (analyze Path lines in news headers from the full newsfeed for
+     some time)
+\item get addresses of irc servers
+\item subscribe to the most popular mailing lists in the world to get
+    information about arrival dates of messages
+\end{itemize}
+
+When you start analyzing privatized data, I would guess you can fairly
+easily
+\begin{itemize}
+\item identify telnet port
+\item identify rlogin port
+\item identify rsh port
+\item identify domain name server port
+\item identify syslog port
+\item identify ftp port
+\item identify smtp port
+\item identify pop port
+\item identify irc port
+\item identify finger port
+\item identify http port
+\item identify nntp port, especially if there are newsfeeds in the trace
+\item identify nfs port (2049)
+\end{itemize}
+
+Also, you can quite easily identify
+\begin{itemize}
+\item routers (traffic patterns and physical addresses)
+\item unix servers (telnet, rlogin, rsh)
+\item dns servers (dns traffic)
+\item www servers (http traffic)
+\end{itemize}
+
+You get starting points for randomized IP to real IP mapping from e.g.
+\begin{itemize}
+\item queries from DNS servers to DNS root servers (whose addresses you know!)
+\item It might be possible to recognize altavista.digital.com.
+\item If the trace is long, it might be possible to correlate arrival
+    time of e-mail messages from some hosts to arrival times of mail
+    from popular mailing lists.  This would probably allow recognizing
+    some mailing list servers.
+\item You can probably recognize which direction in newsfeed is
+    upstream.  You can then correlate arrival times of messages through
+    particular hosts with the messages seen in the traces.  This will
+    probably allow you to recognize directly the nntp servers \emph{and
+    posting hosts}.
+\item The amount of your outgoing irc traffic allows to narrow down on
+    the servers.  Correlating outgoing message times and sizes may again be
+    enough to pinpoint the particular server.  Data obtained from irc
+    servers (/who listings) can then be used to determine who sent
+    each message, and correlate it with hosts of the users.
+\item You might recognize e-mail messages going to common mailing list
+    servers, correlate their times with messages you have received
+    from those servers, and directly determine who sent which and from
+    which host.
+\item By now, you probably have enough information to start determining
+    the likely addresses of some common WWW servers (using the size of
+    their main page, number and sizes of inlined images, etc. as
+    additional information, and already guessed bits of their
+    addresses).  I would guess you can recognize a lot of WWW servers
+    from this data.  If you can get logs from some of these, you
+    can directly recognize the client hosts.  (Note that cache servers
+    make this task a bit more complicated; however, I would guess that
+    it is fairly easy to recognize cache servers).
+\item By now, we most likely know at least some hosts from within the
+    domains where the trace was taken.  We can use traceroute to get
+    addresses of the routers and map them against randomized
+    addresses.
+\item With some luck, you can get hostinfo data from DNS.  With some
+    luck, that info includes machine types (manufacturer).  You can
+    match this with manufacturer data obtained from physical addresses.
+\item If you have access to some manufacturer's or software supplier's
+    license database, you can probably directly map hardware ethernet
+    addresses to ip addresses
+\end{itemize}
+
+\section{Summary}
+
+Whether this is a problem depends on your threat model.  If you are
+very concerned about leaking your network topology, I would not
+recommend giving out trace information privatized with the \emph{-A50}
+option.  I wouldn't expect this to be the case for most organizations.
+
+\end{document}
