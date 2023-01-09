@@ -1,0 +1,3 @@
+FIELD		(ICMP_echo_id,		2, 	KEEP)
+FIELD		(ICMP_echo_seq,		2, 	KEEP)
+FIELD		(ICMP_echo_pyld,	RESTLEN,	SKIP)

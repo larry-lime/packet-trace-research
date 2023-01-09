@@ -1,0 +1,40 @@
+	int case_len;
+
+#	undef CASE
+#	undef DEFAULT_CASE
+
+#	define CASE(case_name, case_index, case_width, processor) 	\
+		case case_index:					\
+			case_len = check_case_length(pkt_in, #case_name,\
+				offset_in, case_width, len, caplen);	\
+									\
+			if ( ! check_special_case(case_name, 		\
+					#case_name, start, caplen,	\
+					offset_in, case_len, offset_out,\
+					pkt_in, pkt_out) )		\
+				{					\
+				DebugMsg("processing case '%s' with %s", \
+				         #case_name, #processor);	\
+				processor(#case_name, start, caplen, 	\
+					offset_in, case_len, offset_out,\
+					pkt_in, pkt_out);		\
+				}					\
+			break;
+
+#	define DEFAULT_CASE(case_name, case_width, processor) 		\
+		default:						\
+			case_len = check_case_length(pkt_in, #case_name,\
+				offset_in, case_width, len, caplen);	\
+									\
+			if ( ! check_special_case(case_name, 		\
+					#case_name, start, caplen,	\
+					offset_in, case_len, offset_out,\
+					pkt_in, pkt_out) )		\
+				{					\
+				DebugMsg("processing case '%s' with %s", \
+				         #case_name, #processor);	\
+				processor(#case_name, start, caplen, 	\
+					offset_in, case_len, offset_out,\
+					pkt_in, pkt_out);		\
+				}					\
+			break;

@@ -1,0 +1,5 @@
+FIELD		(ICMP_type,	1,		KEEP)
+FIELD		(ICMP_code,	1,		KEEP)
+PUTOFF_FIELD	(ICMP_chksum,	2,		ZERO)
+FIELD		(ICMP_data,	RESTLEN, 	anonymize_icmp_data)	// icmp-data.anon
+PICKUP_FIELD	(ICMP_chksum,	2,		recompute_icmp_checksum)

@@ -1,0 +1,76 @@
+	int end_of_fields;
+	int field_len;
+	int tmp_offset_in, tmp_offset_out;
+	tmp_offset_in = tmp_offset_out = -1;
+
+	if ( len >= 0 && offset_in + len <= caplen )
+		end_of_fields = offset_in + len;
+	else
+		end_of_fields = caplen;
+
+#	undef FIELD
+#	undef PUTOFF_FIELD
+#	undef PICKUP_FIELD
+#	undef SET_UP_FIELD_LEN
+
+#	define SET_UP_FIELD_LEN(field_name, field_width) 		\
+		{							\
+		field_len = field_width; 				\
+		field_len = check_data_length(				\
+				pkt_in, #field_name, 			\
+				offset_in, field_width, end_of_fields);	\
+		}
+
+#	define FIELD(field_name, field_width, processor)	 	\
+		SET_UP_FIELD_LEN(field_name, field_width);		\
+		if ( ! check_special_case(field_name, 			\
+				#field_name, start, end_of_fields,	\
+				offset_in, field_len, offset_out,	\
+				pkt_in, pkt_out) )			\
+			{						\
+			DebugMsg("processing field '%s' with %s", 	\
+			         #field_name, #processor);		\
+			processor(#field_name, start, end_of_fields,	\
+				offset_in, field_len, offset_out,	\
+				pkt_in, pkt_out);			\
+			}						\
+		else							\
+			{						\
+			DebugMsg("skipping special case for '%s'", 	\
+			         #field_name);				\
+			}
+
+#	define PUTOFF_FIELD(field_name, field_width, processor)		\
+		const int offset_in_##field_name = offset_in;		\
+		const int offset_out_##field_name = offset_out;		\
+		SET_UP_FIELD_LEN(field_name, field_width);		\
+		DebugMsg("processing field '%s' with %s", 		\
+		         #field_name, #processor);			\
+		processor(#field_name, start, end_of_fields,		\
+		          offset_in, field_len, offset_out,		\
+		          pkt_in, pkt_out);				\
+		const int len_##field_name = field_len;
+
+#	define PICKUP_FIELD(field_name, field_width, processor)		\
+		tmp_offset_in = offset_in_##field_name;			\
+		tmp_offset_out = offset_out_##field_name;		\
+		if ( ! check_special_case(field_name, 			\
+				#field_name, start, end_of_fields,	\
+				tmp_offset_in, 				\
+				len_##field_name,			\
+				tmp_offset_out,				\
+				pkt_in, pkt_out) )			\
+			{						\
+			DebugMsg("processing field '%s' with %s", 	\
+			         #field_name, #processor);		\
+			processor(#field_name, start, end_of_fields,	\
+				tmp_offset_in,				\
+				len_##field_name,			\
+				tmp_offset_out,		 		\
+				pkt_in, pkt_out);			\
+			}						\
+		else							\
+			{						\
+			DebugMsg("skipping special case for '%s'", 	\
+			         #field_name);				\
+			}

@@ -1,0 +1,26 @@
+//////////////////////////////////////////////////////////////////////////////
+// Below are network blocks belong to the enterprise. And the parameters are:
+//   ENTERPRISE_NETWORK(<prefix>, <network name>)
+// Where:
+// - Subnets of the same network name will be renumbered together
+//////////////////////////////////////////////////////////////////////////////
+
+// ENTERPRISE_NETWORK("128.3.0.0/16", 	"LBNL")
+// ENTERPRISE_NETWORK("128.55.0.0/16", 	"NERSC")	// NERSC
+
+
+//////////////////////////////////////////////////////////////////////////////
+// Below are the list of subnets. And the parameters are:
+//
+//   ENTERPRISE_SUBNET(<prefix>, <mask>, 
+//	<gateway>*, <broadcast addresses>*, 
+//	PRESERVE | BREAKUP, <notes to export in meta data>*)
+// Where:
+// - Those marked with "*" are optional, and can be empty string "".
+// - PRESERVE means addresses in that subnet will be mapped to a same subnet; 
+//   and BREAKUP means the subnet prefix for addresses in the subnet will be 
+//   renumbered individually and probably will *not* end in the same subnet.
+//////////////////////////////////////////////////////////////////////////////
+
+// ENTERPRISE_SUBNET("128.3.1.0", "255.255.255.0", "128.3.1.1", "128.3.1.0,128.3.1.255", PRESERVE, "")
+// ENTERPRISE_SUBNET("128.55.0.0", "255.255.0.0", "", "", PRESERVE, "") // The whole NERSC is considered as a single subnet

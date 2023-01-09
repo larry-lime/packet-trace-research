@@ -1,0 +1,2 @@
+FIELD		(ICMP_context_unused,	4, 		ZERO)
+FIELD		(ICMP_context,		RESTLEN,	anonymize_ip_pkt)

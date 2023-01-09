@@ -1,9 +1,9 @@
-# Tcpdpriv Notes
+# Packet Trace Research Notes
 
 This installation 
 
-## Installation
-### Install `libpcap`
+## `tcpdpriv` Installation
+### Build & Install Dependancy `libpcap`
 1. `configure` requirements
     ```shell
     sudo apt install flex bison
@@ -15,7 +15,7 @@ This installation
     OR
 
     Install from [libpcap](https://github.com/the-tcpdump-group/libpcap) from source (but this doesn't seem to work)
-### Install `tcpdpriv`
+### Build & Install `tcpdpriv`
 1. Install Requirements
     ```shell
     sudo apt install net-tools
@@ -41,3 +41,4 @@ This installation
     ```
 ## Usage
 ...
+## ``
