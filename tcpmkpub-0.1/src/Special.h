@@ -2,6 +2,7 @@
 #define special_h
 
 #include <string>
+#include <cstring>
 #include <map>
 using namespace std;
 

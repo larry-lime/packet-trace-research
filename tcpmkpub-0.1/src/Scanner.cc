@@ -5,6 +5,7 @@
 #include <map>
 #include <set>
 #include <string>
+#include <cstring>
 using namespace std;
 
 #include "common.h"
@@ -60,7 +61,7 @@ public:
 		{ return looks_like_sequential_scan; }
 
 protected:
-	bool AddressSequence::DetectSequentialScan(bool ascending);
+	bool DetectSequentialScan(bool ascending);
 
 	deque<in_addr_t> seq;
 	set<in_addr_t> addr_in_seq;

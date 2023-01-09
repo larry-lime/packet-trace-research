@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <cassert>
 
 #include "common.h"
 #include "Hash.h"
