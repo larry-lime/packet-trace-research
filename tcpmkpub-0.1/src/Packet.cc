@@ -2,7 +2,6 @@
 #include "Packet.h"
 
 #include <pcap.h>
-#include <cstring>
 #include <netinet/in_systm.h>
 #include <netinet/in.h>
 #include <net/ethernet.h>
