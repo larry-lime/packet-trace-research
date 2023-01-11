@@ -1,3 +1,0 @@
-CASE		(ETHERDATA_ip,	0x0800,	VARLEN,	anonymize_ip_pkt)  // ip.anon
-CASE		(ETHERDATA_arp,	0x0806,	VARLEN,	anonymize_arp_pkt) // arp.anon
-DEFAULT_CASE	(ETHERDATA_other,	VARLEN, other_ethertnet_pkt_alert_and_skip)

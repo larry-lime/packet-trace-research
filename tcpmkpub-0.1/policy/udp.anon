@@ -1,6 +1,0 @@
-FIELD		(UDP_srcport,	2,		KEEP)
-FIELD		(UDP_dstport,	2,		KEEP)
-FIELD		(UDP_len,	2,		KEEP)
-PUTOFF_FIELD	(UDP_chksum,	2,		ZERO)
-FIELD		(UDP_data,	RESTLEN, 	SKIP)
-PICKUP_FIELD	(UDP_chksum,	2,		recompute_udp_checksum)

@@ -58,6 +58,10 @@ usage:
 ```
 ## `tcpmkpub` Installation
 1. Follow the directions in `INSTALL` until step 2
+    - For ARM based systems execute this configure command
+    ```shell
+    ./configure --build=aarch64-unknown-linux-gnu
+    ```
 2. Add the following imports to the top of `A50.cc`
     ```cpp
     #include <cassert>

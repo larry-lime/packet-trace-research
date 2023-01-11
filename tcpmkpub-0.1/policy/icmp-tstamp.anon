@@ -1,5 +1,0 @@
-FIELD	(ICMP_ts_id,		2, 	KEEP)
-FIELD	(ICMP_ts_seq,		2, 	KEEP)
-FIELD	(ICMP_ts_orig_ts,	4,	KEEP)
-FIELD	(ICMP_ts_recv_ts,	4,	KEEP)
-FIELD	(ICMP_ts_trsm_ts,	4,	KEEP)

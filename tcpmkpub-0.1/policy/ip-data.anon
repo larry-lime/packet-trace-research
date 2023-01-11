@@ -1,4 +1,0 @@
-CASE(TCP,	IPPROTO_TCP,	VARLEN, 	anonymize_tcp_pkt)	// tcp.anon
-CASE(UDP,	IPPROTO_UDP,	VARLEN, 	anonymize_udp_pkt)	// udp.anon
-CASE(ICMP,	IPPROTO_ICMP,	VARLEN, 	anonymize_icmp_pkt)	// icmp.anon
-DEFAULT_CASE(IP_other, 		RESTLEN, 	SKIP)

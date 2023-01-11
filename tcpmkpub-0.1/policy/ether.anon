@@ -1,9 +1,0 @@
-PUTOFF_FIELD	(ETHER_dstaddr, 	6, 	ZERO)
-PUTOFF_FIELD	(ETHER_srcaddr, 	6, 	ZERO)
-FIELD		(ETHER_lentype,		2, 	KEEP)
-// See ether-data.anon for anonymize_ethernet_data
-FIELD		(ETHER_data,		VARLEN, anonymize_ethernet_data) 
-// We do not see ethernet checksums in tcpdump traces
-// FIELD	(ETHER_chksum,		4, 	SKIP)
-PICKUP_FIELD	(ETHER_dstaddr, 	6, 	anonymize_ethernet_addr)
-PICKUP_FIELD	(ETHER_srcaddr, 	6, 	anonymize_ethernet_addr)

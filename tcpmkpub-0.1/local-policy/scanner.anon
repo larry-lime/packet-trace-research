@@ -1,4 +1,0 @@
-// Manually add scanner addresses here, in addition to the ones detected by 
-// the automated scanner-detection algorithm in tcpmkpub.
-
-// SCANNER("131.243.12.34")

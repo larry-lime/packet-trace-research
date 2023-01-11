@@ -1,3 +1,0 @@
-FIELD	(ICMP_maskreq_id,	2, 	KEEP)
-FIELD	(ICMP_maskreq_seq,	2, 	KEEP)
-FIELD	(ICMP_maskreq_mask,	4,	KEEP)

@@ -1,6 +1,0 @@
-// Set the BPF filter used for reading the source trace. For instance, the 
-// following filters exclude port 80/tcp (HTTP) traffic or read only port 
-// 53/udp (DNS) traffic, respectively.
- 
-// PCAP_FILTER("not tcp port 80")
-// PCAP_FILTER("udp port 53")

@@ -1,2 +1,0 @@
-FIELD	(ICMP_ireq_id,	2, 	KEEP)
-FIELD	(ICMP_ireq_seq,	2, 	KEEP)

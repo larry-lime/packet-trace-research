@@ -1,2 +1,0 @@
-FIELD(ICMP_redirect_gateway,	4, 		anonymize_ip_addr)
-FIELD(ICMP_redirect_context,	RESTLEN,	anonymize_ip_pkt)

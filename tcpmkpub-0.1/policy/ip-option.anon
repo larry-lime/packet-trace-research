@@ -1,6 +1,0 @@
-// CASE ( Name, CaseIndex, DataLength, Processor )
-CASE(IPOPT_eol,	IPOPT_EOL,	1,	KEEP)
-CASE(IPOPT_nop,	IPOPT_NOP,	1,	KEEP)
-CASE(IPOPT_rr,	IPOPT_RR,	VARLEN,	IPOPT_anonymize_record_route)
-CASE(IPOPT_ra,	IPOPT_RA,	4,	const_n32(0x94040000UL, CORRECT))
-DEFAULT_CASE(IPOPT_other,	VARLEN,	IPOPT_alert_and_replace_with_NOP)
