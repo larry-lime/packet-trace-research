@@ -1,0 +1,12 @@
+FIELD		(TCP_srcport,	2,	KEEP)
+FIELD		(TCP_dstport,	2,	KEEP)
+FIELD		(TCP_seq,	4,	KEEP)
+FIELD		(TCP_ack,	4,	KEEP)
+FIELD		(TCP_off,	1,	KEEP)
+FIELD		(TCP_flags,	1,	KEEP)
+FIELD		(TCP_window,	2,	KEEP)
+PUTOFF_FIELD	(TCP_chksum,	2,	ZERO)
+FIELD		(TCP_urgptr,	2,	KEEP)
+FIELD		(TCP_options,	VARLEN, anonymize_tcp_options)	// tcp-option.anon
+PICKUP_FIELD	(TCP_chksum,	0,	recompute_tcp_checksum)
+FIELD		(TCP_data,	RESTLEN, SKIP)

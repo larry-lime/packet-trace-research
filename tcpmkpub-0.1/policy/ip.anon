@@ -1,0 +1,15 @@
+FIELD		(IP_verhl,	1,	KEEP)
+FIELD		(IP_tos,	1,	KEEP)
+FIELD		(IP_len,	2, 	KEEP)
+FIELD		(IP_id,		2,	KEEP)
+FIELD		(IP_frag,	2,	KEEP)
+FIELD		(IP_ttl,	1,	KEEP)
+FIELD		(IP_proto,	1,	KEEP)
+PUTOFF_FIELD	(IP_cksum,	2,	ZERO)
+PUTOFF_FIELD	(IP_srcaddr,	4,	register_ip_addr)
+PUTOFF_FIELD	(IP_dstaddr,	4,	register_ip_addr)
+FIELD		(IP_options,	VARLEN, anonymize_ip_options) 	// ip-option.anon
+PICKUP_FIELD	(IP_srcaddr,	4,	anonymize_ip_addr) 	// topology.anon
+PICKUP_FIELD	(IP_dstaddr,	4,	anonymize_ip_addr) 	// topology.anon
+PICKUP_FIELD	(IP_cksum,	0, 	recompute_ip_checksum)
+FIELD		(IP_data,	VARLEN, anonymize_ip_data)	// ip-data.anon

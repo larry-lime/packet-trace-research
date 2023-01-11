@@ -1,0 +1,17 @@
+// Example 1: preserve the contents of weird ARP packets which contain 
+// the following string, rather than a well-formed ARP frame, for the 
+// specified timestamps.
+
+// static SpecialCaseString weird_arp("Move to 10mb on D3-packet");
+
+// DEFINE_SPECIAL_CASE(ETHERDATA_arp, 1105134501.568878, weird_arp)
+// DEFINE_SPECIAL_CASE(ETHERDATA_arp, 1105058483.162984, weird_arp)
+// DEFINE_SPECIAL_CASE(ETHERDATA_arp, 1105150998.936459, weird_arp)
+
+
+
+// Example 2: preserve the typo of 192.168.0.1 (a private address) as 
+// 198.168.0.1, for any timestamp (with 0).
+
+// static SpecialCaseIPAddr private_addr_typo("198.168.0.1");
+// DEFINE_SPECIAL_CASE(IP_dstaddr, 0, private_addr_typo)

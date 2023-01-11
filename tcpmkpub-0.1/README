@@ -1,0 +1,80 @@
+tcpmkpub is a tool for anonymizing packet traces collected from
+enterprise networks. It is used to produce packet header traces of
+Lawrence Berkeley National Lab (LBNL) enterprise traces. Please see
+http://www.icir.org/enterprise-tracing/ for more details. 
+In particular, the paper "The Devil and Packet Trace Anonymization"
+(which can be found on http://www.icir.org/enterprise-tracing/papers.html)
+describes the structure of tcpmkpub, as well as the anonymization
+policy for the LBNL traces.
+
+*	*	*
+
+Please note that the anonymization policy to be compiled into the
+program is site-specific. At least one needs to specify the prefix of
+local network and subnets in local-policy/topopology.anon.  So please
+go through the following steps to create your policy files, and then
+configure, compile, and run tcpmkpub.
+
+1. Create your site-specific policy files under local-policy/. You
+may follow the samples already in the directory. Please modify
+local-policy/topology.anon to specify the address structure of the
+enterprise network from which the trace is collected.
+
+For a quick testing, suppose the enterprise network has prefix
+128.3.0.0/16, simply put the following lines in topology.anon.
+(Note that this is a quick hack for testing; please specify the
+subnets if you would like preserve the fact that certain addresses
+belong to the same subnet.)
+
+ENTERPRISE_NETWORK("128.3.0.0/16", 	"LBNL")
+ENTERPRISE_SUBNET("128.3.0.0", "255.255.0.0", "", "", PRESERVE, "")
+
+While the other files in local-policy/ can be used as they are,
+please take a moment to take a look at them and understand what
+they are used for.
+
+2. Please go over policy files in directory policy/ and the "Devil"
+paper mentioned previously to understand the LBNL anonymization policy
+and tailor the policy files according to your policy. To get a sense of
+why this is necessary, consider the following questions:
+
+- Is it OK to expose what applications run on your enterprise
+network? 
+
+Note that the applications exposed (without contents -- just the
+existence of them) might include gaming, peer-to-peer music/movie/software
+downloading, and instant messenging -- would their existence embarrass
+your institution? If so, you can consider (1) inspect your traces
+to confirm their absence; (2) leave out sensitive traffic (see
+local-policy/filter.anon); or (3) obsure the TCP/UDP port numbers
+(which may not be enough). With the LBNL traces we applied (1) and
+(2).
+
+- Is it OK to preserve the connection size information? 
+
+Sizes of HTTP connections, for example, may be used to infer what
+Web pages (including pornography pages) are being requested, if the
+adversary has the enough information about the Web pages. LBNL
+chooses to preserve connection sizes. This may be problematic for
+your institution, and in that case, consider obsuring IP and UDP
+length fields, and TCP sequence numbers. 
+
+Note that there can be other questions like these. So please take
+some time to consider which part of the LBNL anonymization policy
+does not work for your institution.
+
+3. Configure and compile tcpmkpub according to INSTALL.
+
+4. Run tcpmkpub. You can use or consult tools/run_tcpmkpub. It
+generates the anonymization traces, an anonymization log, and a
+meta-data file that can be published together with the traces. 
+
+DO NOT PUBLISH THE LOG, AS IT CONTAINS SENSITIVE INFORMATION SUCH
+AS THE IP ADDRESS MAPPING.
+
+5. Before you publish traces, please inspect the log for errors and
+alerts. Errors usually are caused by bugs in tcpmkpub, while alerts
+may suggest changes to the policy files.
+
+Please report any problem or bug to Ruoming Pang (rpang@cs.princeton.edu).
+Thank you.

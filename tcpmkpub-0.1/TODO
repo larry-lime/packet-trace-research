@@ -1,0 +1,12 @@
+x Ethernet address anonymization
+x Preserving broadcast/gateway addresses
+x Addresses not in any subnet (mapping will not be consistent *across* executions)
+x Produce notes (check notes)
+x ARP testing
+x Alerts
+
+*	*	*
+
+Add topology and scanner list parser to tcpmkpub
+Add a scan detector to tcpmkpub
+Add validation tools to tools/

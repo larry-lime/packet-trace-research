@@ -1,0 +1,3 @@
+FIELD	(ICMP_pp_pointer,	1, 	KEEP)
+FIELD	(ICMP_pp_unused,	3, 	ZERO)
+FIELD	(ICMP_pp_context,	RESTLEN,	anonymize_ip_pkt)

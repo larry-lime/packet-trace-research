@@ -70,13 +70,13 @@ usage:
     ```cpp
     #include <cstring>
     ```
-3. Add the following imports to the top of`Scanner.cc`
+3. Add the following imports to the top of`Special.h`
     ```cpp
     #include <cstring>
     ```
-5. Make the following changes to `Scanner.cc` on line 60
+5. Make the following changes to `Scanner.cc` on line 64
     ```cpp
-    bool DetectSequentialScan(bool ascending)
+    bool DetectSequentialScan(bool ascending);
     ```
 6. Add the following imports to the top of`Scanner.cc`
     ```cpp
