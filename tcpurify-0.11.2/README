@@ -1,0 +1,192 @@
+This program is provided AS IS with ABSOLUTELY NO WARRANTY, express or
+implied.  Any damage caused by this program, whether intentional or
+accidental, is the sole responsibility of the user.
+
+Author:
+
+  Ethan Blanton <eblanton@cs.ohiou.edu>
+  
+Program Overview:
+
+  tcpurify is intended to be a secure alternative to tcpdump.  tcpurify can
+  be instructed to create Ethernet dumps that have been obfuscated in such a
+  way that the original traffic data is impossible to reconstruct, and host
+  addresses are mangled for privacy purposes while retaining information
+  that could be necessary for security auditing.
+
+  tcpurify is NOT safe for usage by untrusted users; the dumps it creates
+  are, however, intended to be so.  Reading directly from the Ethernet
+  device requires root privileges, but tcpurify is not designed to be suid
+  safe; this is to encourage the superuser to take the dumps him/herself and
+  ensure that they have been captured in a fashion that preserves the
+  privacy of network users appropriately.
+
+Usage:
+
+  tcpurify [OPTIONS] <encoding> [ENCODING OPTIONS]
+  
+  Basic usage of tcpurify (as a simple tcpdump) is simple.  If the
+  program is started with only the argument 'none' it will simply
+  start capturing from the preferred pcap device to stdout, truncating
+  packets at the data portion but performing no header obfuscation.
+  The following command line options change this default operation in
+  the described fashion.
+
+  -h
+  	Display a short help message and version information
+
+  -v
+  	Display only version information
+	
+  -d
+  	Turn on debugging messages; the exact nature of these debugging
+	messages will vary from release to release, depending on what the
+	developer feels is useful output for the current state of the code.
+	Including this option more than once may or may not change the
+	verbosity of these debugging messages.
+
+  -R
+        Reverse mapping; usage of this option causes tcpurify to
+        un-sanitize a dump file by reversing a previous randomization
+        of the IP addresses.  Note that for this to work properly, most
+        the encoding methods will require the specification of the
+        mapping file used to randomize the addresses in the first 
+        place.
+
+        NOTE: This was previously -r, but has been changed to -R to
+        free -r to be used in the same context as tcpdump.
+
+  -x
+  	Do not truncate; incoming packets will not be truncated at the end
+	of the recognized header.  This leaves streams intact for more
+	detailed examination, but may violate the privacy of network users.
+	
+  -t
+  	Real-time output; incoming packets will be output with timing delays
+	introduced to replicate the original timing of input.  This option
+	must be used with the -r option, and it simulates live capture when
+	the input is in fact a file.  Currently tcpurify does not truncate
+	or obfuscate packets in real-time mode.
+
+  -V
+        Verify the TCP checksum if possible, and encode the result in its
+        place.  The result will be stored in network byte order, with
+        the value 0 == good, 1 == bad, and 2 == not enough information
+        (as when caplen < pktlen).
+  
+  -T delay
+  	Maximum delay between packets in milliseconds for real-time output;
+	if the natural delay between packets is greater than this, the packet
+	will be sent after this period of time nevertheless.
+
+  -i interface
+  	Define the capture interface to be used; this is a system-specific
+	device.  (likely eth0 on Linux, le0 on Solaris, etc.) This device
+	will be opened by the pcap library for packet capture.  Currently
+	only Ethernet interfaces are supported.  -i cannot be used with the
+	-r option.
+
+  -r filename (-f filename, deprecated)
+        File to be read as an input device; filename should be the name of a
+	pcap capture file (such as output by tcpurify or tcpdump) to be
+	treated as an input interface.  Packets will be read from this file
+	and processed just as if they had come in on a network interface.
+
+  -w filename (-o filename, deprecated)
+  	File to be used for output; filename should be the desired output
+	file name.  Captured and transformed packets will be written to this
+	file rather than stdout.
+
+  -c count
+  	Capture limit; capture only count packets before exiting.  If this
+	option is not specified, tcpurify captures until SIGTERM is recieved
+	or an error occurs.  If it is specified, tcpurify will capture
+	exactly count packets regardless of the time frame this occurs in.
+
+  Header obfuscation via the randomization of IP addresses therein is
+  accomplished by specifying an encoding method other than 'none' as
+  the first non-option argument to tcpurify.  The currently recognized
+  encodings are:
+  
+  * none
+    
+    IP addresses are simply left as-is.  This encoding takes no
+    options.
+  
+  * nullify
+
+    IP addresses are changed to 0.0.0.0.  This encoding takes no
+    options.
+
+  * table
+  
+    Specify one or more subnets to obfuscate along with the bits you
+    wish to randomize.  The syntax is as follows:
+  
+    subnet/netmask/xformmask
+
+    Where subnet is a dotted quad, and netmask and xformmask are
+    hexadecimal integers.  Subnet is the base address of the subnet to
+    be obfuscated and netmask is a mask indicating the range of
+    addresses to match (as opposed to the *actual* netmask of that
+    subnet).  xformmask is the mask of bits to be randomized, and will
+    often be the inverse of the supplied netmask.  The first and last
+    addresses of this mask will NOT be obfuscated, as they are
+    presumed to be network and broadcast addresses, respectively.  If
+    you desire a different behavior, remember to alter this mask
+    appropriately. This syntax is best illustrated by an example.
+
+    EXAMPLE 1:
+      Let us suppose that our local network is comprised of the
+      addresses from 192.168.1.0 through 192.168.1.255.
+      (192.168.1.0/24, or 192.168.1.0/255.255.255.0) We would like to
+      randomize all of the host addresses on this network, leaving the
+      network address (192.168.1.0) and broadcast address
+      (192.168.1.255) alone.  We would use the following triplet:
+    
+      192.168.1.0/0xffffff00/0x000000ff, or 192.168.1.0/0xffffff00/0xff
+    
+      The corresponding command line would be:
+    
+      tcpurify 192.168.112.0/0xffffff00/0xff
+    
+    EXAMPLE 2:
+    
+      Suppose that our organization's assigned network addresses fall
+      into the 172.16.0.0/12 range, and we have farther subnetted into
+      254-host networks with 24-bit netmasks.  We would like to
+      randomize the host portion only of all addresses falling in our
+      local network.  We would use this triplet:
+    
+      172.16.0.0/0xfff00000/0xff
+
+    A map file that can be used to restore the original host addresses
+    from a randomized trace file will be saved as /tmp/tcpurify-<time>
+    (unless the mapfile option documented below is used), where <time>
+    is the system time as returned by time(NULL).  This file will be
+    created readable only by the user executing tcpurify, as it
+    contains potentially sensitive data.  It can be removed
+    immediately after capturing begins if desired, but you will
+    probably wish to store it in a safe place in case security
+    auditing demands that you restore the original IP addresses for
+    analysis.
+    
+    Options:
+    
+      mapfile=filename
+      
+        The keyword 'mapfile' may be used to specify a mapping file
+        name for the transformation.  If this file is specified and no
+        triplets are specified on the command line, tcpurify will read
+        this file to initialize its mapping tables.  If both this file
+        and triplets are specified, tcpurify will create a new mapping
+        table and save it to this file.
+
+Requirements:
+
+  The Lawrence Berkeley pcap library version 0.4 or newer:
+    - ftp://ftp.ee.lbl.gov/libpcap.tar.Z - Original home
+    - http://www.tcpdump.org/ - Maintainers-come-lately
+    - This is used for capturing packets and reading tcpdump-formatted 
+      capture files.  Versions of libpcap up through 0.6.2 have been tested
+      as of this writing and seem to work.

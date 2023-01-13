@@ -1,0 +1,13 @@
+tcpurify
+Makefile
+Makefile.in
+configure
+config.cache
+config.status
+config.log
+aclocal.m4
+config.h.in
+stamp-h.in
+.deps
+config.h
+stamp-h

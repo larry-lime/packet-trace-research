@@ -1,0 +1,18 @@
+#!/bin/sh
+
+
+TCPURIFY_SCRIPTS=./scripts
+
+tcpurify=../tcpurify
+tests="none table"
+
+export TCPURIFY_SCRIPTS tcpurify
+
+if test $# -ne 2; then
+  echo "Usage: run_tests <dumpfile> <table triplet>"
+  exit 1
+fi
+
+for script in $tests; do
+  sh scripts/${script}.sh $*
+done

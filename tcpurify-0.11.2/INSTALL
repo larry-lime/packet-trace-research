@@ -1,0 +1,16 @@
+Compilation on supported platforms should be simple if the required libraries
+are present (see the README file).  After editing the makefile and
+commenting/uncommenting the appropriate lines:
+
+./make
+
+should do the trick.  If it does not, please send an email to
+<eblanton@cs.ohiou.edu> detailing the errors generated and a short description
+of the system you tried to compile it on.  Please note that the only currently
+supported systems are Linux 2.2.x, Linux 2.4.x, and Solaris 7.x.
+
+Note that building has only been tested with the GNU gcc compiler, but it
+should compile with any ANSI C compiler.
+
+Installation is as simple as copying the generated 'tcpurify' executable to
+the location of your choice, such as /usr/local/bin.

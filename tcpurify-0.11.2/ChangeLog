@@ -1,0 +1,133 @@
+Changes since 0.11.1:
+
+* The maximum number of networks for encode_table had a bug
+  restricting it to NETWORKS - 1 instead of NETWORKS; fixed.  (Thanks
+  to Mathieu Davy.)
+
+* The creation of temporary files has been changed to use mkstemp
+  instead of the process pid.  Named temporary files have been changed
+  to ensure a tighter permissions mask.
+
+* 'nullify' encoding added, which simply changes all IP addresses to
+  0.0.0.0.
+
+* Bug fix in TCP sanitization code.  TCP packets which were truncated in
+  the middle of their TCP options would be 'extended' to cover their
+  (probably invalid) missing options.  (Thanks to Shawn Ostermann.)
+
+Changes since 0.11.0:
+
+* -r has been renamed to -R, so that -r and -w may take on the same
+  meanings as tcpdump.  -f and -o will likely be removed in a future
+  release so that they may be recycled if logical.
+
+* The newly added -V option encodes some information about the
+  original packet's checksum for later analysis.
+
+Changes since 0.9.6:
+
+* Major restructuring.  The minor changes are too numerous to list,
+  but the basic thrust of things is that the method of obfuscating IP
+  addresses is now selectable.  The old method is known as "table".
+  All those "minor" changes add up to a completely different approach,
+  and I think I like this one a lot better.  Adding new encoding
+  methods is as simple as filling in a structure in an array to bind
+  the encoding functions to a name, and then implementing three
+  functions.
+
+* I'm not sure encode_table reverse mappings have ever worked right...
+  Apparently I was convinced they did at some time, but they sure
+  don't look like they did to me.  Fixed.
+
+* Drop short or malformed packets out of hand, rather than passing
+  them on.  This may be undesirable for IDS work, I don't know...  May
+  have to revisit this later.
+
+Changes since 0.9.5:
+
+* Moved to autoconf/automake ...  This greatly improves the portability
+  (well, not yet but it will) and simplifies setup for platforms dissimilar
+  to my everyday devel platform.  Note that at this point, basically the
+  only thing it affects is -lnsl and -lsocket...  Plus it'll bomb out if you
+  don't have pcap and it will let you specify where pcap lives.
+  
+* Checksum calculation on SPARC (maybe other) systems was *not*, in fact,
+  correct...  These systems require a cast to short for a bitwise NOT of a
+  short value, or they seem to return a long value with the upper two bytes
+  stuffed with 1's.  Hmm.
+  
+* Checksum recalculating is in general cleaner and better.
+
+* ICMP packets are now truncated after the IP header, as their payload likely
+  contains the first N (where N is likely to be 64) bytes of an unsanitized
+  IP packet; eventually I guess I should truncate after the ICMP header, but
+  I'll need to look into which options may need further cleaning.
+
+* Increased packet capture default length to 144 bytes; 64 will not get all
+  of the TCP options on a TCP header.
+
+* Removed a reference to zlib.h from tcpurify.h
+
+* Added ETHERTYPE_REVARP in the case where the host operating system does
+  not define it; this should probably be in the configure script, but for
+  now it goes in capture.c.
+
+Changes since 0.9.4:
+
+* zlib support has been removed. Now that pcap is under active development
+  again, it does not seem prudent to be tied to a particular version of the
+  library. Since dump files created with versions of pcap newer than 0.4 are
+  binary incompatible with pcap 0.4 on Linux and zlib requires binary
+  compatibility, zlib goes.
+
+* The ability to sanitize files repeatedly with the same mapping has been
+  added. This necessitated a change to the meaning of -r and the addition of
+  -m ... Read the docs.
+
+* Checksum recalculation is now implemented and correct; The sanitized
+  packets' checksums (IP, TCP, and UDP) should all check out correctly if
+  the original dumpfile did.
+
+* The Makefile is generally more friendly than the old one.  Nothing big 
+  here.
+
+* Apparently one of those "Other stuff" things that I forgot in 0.9.4
+  involved completely breaking the program to the point that it was
+  completely useless for anything but reversing previous dumps, and I'm not
+  even really confident it did that right. Fortunately no one seemed to be
+  using it, as I got no bug reports until a few days ago.
+
+* There is a serious sanitization bug in ALL previous releases of tcpurify
+  which has been fixed. ARP/RARP packets were being left in the dumps, which
+  means that a patient hacker (or one with the skills to write a reasonably
+  trivial packet parsing program) could have neatly reversed any IP mappings
+  from the network immediately local to the capture point.
+  
+Changes since 0.9.3:
+
+* Changed header includes to be sane for non-Linux systesm
+
+* Changed address handling to use inet_pton
+
+* Other stuff, I forget
+
+Changes since 0.9.2:
+
+* Fixed stdout dumping bug
+
+* Fixed version info
+
+* Various cleanups
+
+Changes since 0.9.1:
+
+* Added realtime packet delay ceiling via the -T option
+
+Changes since 0.9:
+
+* Fixes to timed output calculation code
+
+* Added a fflush () (or gzflush ()) into timed output
+
+* Fixed some typos
+	    
