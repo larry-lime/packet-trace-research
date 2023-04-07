@@ -5,8 +5,12 @@
 // - Subnets of the same network name will be renumbered together
 //////////////////////////////////////////////////////////////////////////////
 
-ENTERPRISE_NETWORK("128.3.0.0/16", 	"LBNL")
-ENTERPRISE_NETWORK("128.55.0.0/16", 	"NERSC")	// NERSC
+// ENTERPRISE_NETWORK("128.3.0.0/16", 	"LBNL")
+// ENTERPRISE_NETWORK("128.55.0.0/16", 	"NERSC")	// NERSC
+
+ENTERPRISE_NETWORK("129.144.50.56/16", "rand_add")
+// ENTERPRISE_NETWORK("192.168.64.9/24", "starbucks")
+// ENTERPRISE_NETWORK("192.168.200.135/24", "dev_one")
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -22,5 +26,9 @@ ENTERPRISE_NETWORK("128.55.0.0/16", 	"NERSC")	// NERSC
 //   renumbered individually and probably will *not* end in the same subnet.
 //////////////////////////////////////////////////////////////////////////////
 
-ENTERPRISE_SUBNET("128.3.1.0", "255.255.255.0", "128.3.1.1", "128.3.1.0,128.3.1.255", PRESERVE, "")
-ENTERPRISE_SUBNET("128.55.0.0", "255.255.0.0", "", "", PRESERVE, "") // The whole NERSC is considered as a single subnet
+// ENTERPRISE_SUBNET("128.3.1.0", "255.255.255.0", "128.3.1.1", "128.3.1.0,128.3.1.255", PRESERVE, "")
+// ENTERPRISE_SUBNET("128.55.0.0", "255.255.0.0", "", "", PRESERVE, "") // The whole NERSC is considered as a single subnet
+
+ENTERPRISE_SUBNET("129.144.50.56", "255.255.0.0", "", "", PRESERVE, "")
+// ENTERPRISE_SUBNET("192.168.64.9", "255.255.255.0", "", "", PRESERVE, "")
+// ENTERPRISE_SUBNET("192.168.200.135", "255.255.255.0", "", "", PRESERVE, "")
