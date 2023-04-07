@@ -1,0 +1,10 @@
+#!/bin/sh
+
+try()
+{
+  $*
+  if test $? -ne 0; then
+    echo "Command execution failed, aborting tests."
+    exit 1
+  fi
+}

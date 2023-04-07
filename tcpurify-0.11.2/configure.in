@@ -1,0 +1,70 @@
+AC_INIT(capture.c)
+AC_CONFIG_AUX_DIR(config)
+AC_CANONICAL_SYSTEM
+AM_INIT_AUTOMAKE(tcpurify, 0.11.2)
+AM_CONFIG_HEADER(config.h)
+AC_SUBST(ac_aux_dir)
+
+AC_PROG_CC
+
+AC_SUBST(PCAP_INCLUDES)
+AC_SUBST(PCAP_LDFLAGS)
+
+AC_ARG_WITH(pcap, [  --with-pcap=DIR         Specify path to pcap libs],
+            [
+	      case "$withval" in
+	        yes|no)
+		  AC_MSG_ERROR(--with-pcap requires a path)
+		  ;;
+		*)
+		  if (test \! -d "$withval"); then
+		    AC_MSG_ERROR(pcap path $withval is not valid)
+		  else
+		    PCAP_INCLUDES="-I$withval/include"
+		    PCAP_LDFLAGS="-L$withval/lib"
+                    ac_pcap_withval=$withval;
+		  fi
+		  ;;
+	      esac
+	    ])
+
+ac_save_CPPFLAGS=$CPPFLAGS
+CPPFLAGS="$CPPFLAGS $PCAP_INCLUDES"
+ac_save_LIBS=$LIBS
+LIBS="$PCAP_LDFLAGS $LIBS"
+
+
+# Many Linux distributions put the pcap stuff under pcap/ in
+# /usr/include, so if we can't find pcap.h we'll check a few
+# of the standard places for a pcap/ directory and try that.
+
+for dir in $ac_pcap_withval /usr/include /usr/local/include /opt/include; do
+  if test -d $dir/pcap; then
+    PCAP_INCLUDES="$PCAP_INCLUDES -I$dir/pcap"
+    CPPFLAGS="$ac_save_CPPFLAGS $PCAP_INCLUDES"
+    break
+  fi
+done
+
+AC_CHECK_HEADER(pcap.h, , AC_MSG_ERROR[
+The required header file pcap.h was not found on your system.  This
+file is part of the pcap library, which can be found at
+http://www.tcpdump.org/.
+
+If you are sure that pcap is installed on your system, perhaps you
+should be using the --with-pcap=<path> option.])
+
+AC_CHECK_LIB(pcap, pcap_major_version, 
+             [PCAP_LDFLAGS="$PCAP_LDFLAGS -lpcap"], [AC_MSG_ERROR([
+Could not find the pcap library.  Maybe you need --with-pcap=<path> ?])
+])
+
+LIBS=$ac_save_LIBS
+CPPFLAGS=$ac_save_CFLAGS
+
+AC_CHECK_FUNC(gethostbyaddr,, [AC_CHECK_LIB(nsl, gethostbyaddr)])
+AC_CHECK_FUNC(socket,, [AC_CHECK_LIB(socket, socket)])
+
+
+AC_OUTPUT(Makefile)
+

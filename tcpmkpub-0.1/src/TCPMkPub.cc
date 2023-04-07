@@ -52,7 +52,7 @@ int parse_hex(char ch)
 
 void generate_key(const char *key_file_digest, u_char *key)
 	{
-	const int key_digest_size = 16;
+	const int key_digest_size = 32;
 	// Extract the key digest
 	int len = strlen(key_file_digest);
 	if ( len < key_digest_size )

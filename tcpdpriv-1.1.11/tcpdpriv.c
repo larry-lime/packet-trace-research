@@ -543,7 +543,6 @@ rand_start(void)
     srandom(sum);
 #endif	/* defined(SVR4) */
 }
-
 /*
  *   U   T   I   L   I   Y         R   O   U   T   I   N   E   S
  */

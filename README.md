@@ -92,3 +92,6 @@ Error: a key must be specified with '-k'
 Usage: tcpmkpub [-DSTW] [-f <pcap filter>] [-k <key>] [-K] [-w <output file>] [-s <output scanner file>] <input files...>
 ...
 ```
+## Sample Traces Folder
+- 200722_win_scale_examples_anon.pcapng: TCP Window Scaling examples - available, no scaling and missing/unknown.
+- 200722_tcp_anon.pcapng Netcat - string, file and characters.
