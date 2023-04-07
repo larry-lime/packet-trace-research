@@ -1,6 +1,6 @@
 # Packet Anonymizer Notes
 
-## IP Addresses
+## IP Address Information
 
 ### Classes of IP Addresses
 
@@ -9,6 +9,19 @@
 | A     | 0-127             | 8           |
 | B     | 128-191           | 16          |
 | C     | 192-223           | 24          |
+
+## TCPdpriv
+
+### Anonymization Policy
+Important flags to keep in mind:
+- -A: IP Address
+- -C: Classness of IP
+- -M: Multicast address mapping
+- -P: TCP & UDP port number mapping
+- -S: IP & TCP options mapping
+- -T: TCP port numbers mapping
+- -U: UDP port numbers mapping
+
 
 ## TCPmkpub
 
@@ -62,9 +75,8 @@ There are also alerts about 'bad TCP checksum' here. Previous question still sta
 
 Packets anonymized using this method will be named with `v3` in the name. For example, `netcat_tcpmkpub_v1_anon.pcapng`
 
-IP address used: 129.144.50.56. Sample IP from [Oracle IP Instructional](https://docs.oracle.com/cd/E19504-01/802-5753/planning3-18471/index.html) 
+IP address used: 129.144.50.56. Sample IP from [Oracle IP Instructional](https://docs.oracle.com/cd/E19504-01/802-5753/planning3-18471/index.html)
 
 The output anonymized pcap file is the same as if using our actual IP address. This was easy enough to predict. You can verify this with an md5 hash
 
 ## TCPurify
-
