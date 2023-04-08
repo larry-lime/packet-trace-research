@@ -1,8 +1,9 @@
 # Packet Trace Research - Resources
 
 ## Project Resources
-- [Google Doc](https://docs.google.com/document/d/1pSZ8bOrSE7Kj2ywo2MOr43TgMb44htbPpW3ZsCOYSxI/edit#) 
-- [Github Project Repo](https://github.com/larry-lime/packet-trace-research) 
+
+- [Google Doc](https://docs.google.com/document/d/1pSZ8bOrSE7Kj2ywo2MOr43TgMb44htbPpW3ZsCOYSxI/edit#)
+- [Github Project Repo](https://github.com/larry-lime/packet-trace-research)
 
 ## TCPdpriv
 

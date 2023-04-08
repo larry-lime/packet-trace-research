@@ -13,7 +13,9 @@
 ## TCPdpriv
 
 ### Anonymization Policy
+
 Important flags to keep in mind:
+
 - -A: IP Address
 - -C: Classness of IP
 - -M: Multicast address mapping
@@ -21,7 +23,6 @@ Important flags to keep in mind:
 - -S: IP & TCP options mapping
 - -T: TCP port numbers mapping
 - -U: UDP port numbers mapping
-
 
 ## TCPmkpub
 
