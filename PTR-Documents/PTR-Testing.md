@@ -104,6 +104,11 @@ Speculative mode. Ordinarily the traces will be read twice, with the first pass 
 ...
 ```
 
+### Configure Enterprise Network
+1. Go to `topology.anon`
+
+TODO: RETURN HERE
+
 ### Anonymize Sample Packet
 
 1. Create file with 32 character anonymization key
