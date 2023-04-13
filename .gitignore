@@ -3,3 +3,5 @@ tcpdpriv-1.1.11/tcpdpriv
 tcpdpriv-1.1.11/tcpdutil.o
 tcpdpriv-1.1.11/tcpdpriv.o
 tcpdpriv-1.1.11/Makefile
+
+*.vscode

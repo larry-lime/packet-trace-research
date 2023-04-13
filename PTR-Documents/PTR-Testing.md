@@ -105,6 +105,7 @@ Speculative mode. Ordinarily the traces will be read twice, with the first pass 
 ```
 
 ### Configure Enterprise Network
+
 1. Go to `topology.anon`
 
 TODO: RETURN HERE
@@ -169,6 +170,26 @@ Where options consist of:
 ### Anonymize Sample Packet
 
 Command:
+
+#### none encoding
+
+Produces an output file with IP addresses and all other fields unchanged
+
+```shell
+tcpurify -r <path-to-input-*.pcapng> -w <path-to-output.*.pcapng>  none
+```
+
+#### nullify encoding
+
+Produces an output file with all source and destination IP addresses changed to 0.0.0.0.
+
+```shell
+tcpurify -r <path-to-input-*.pcapng> -w <path-to-output.*.pcapng>  nullify
+```
+
+#### table encoding
+
+Specifies a range of subnets to obfuscate along with the bits you wish to randomize.
 
 ```shell
 tcpurify -r <path-to-input-*.pcapng> -w <path-to-output.*.pcapng>  none

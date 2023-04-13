@@ -90,20 +90,8 @@ TCP & UDP
 
 ## TCPurify
 
-| Changed Fields       | Change Approach                        | Use Cases            |
-| -------------------- | -------------------------------------- | -------------------- |
-| IP Address (none)    | does nothing                           | default behavior     |
-| IP Address (nullify) | replaces all IP addresses with 0.0.0.0 | no apparent use case |
-| IP Address (table)   | randomizes subnet IP addresses         |                      |
-
-- Three different methods:
-  - none: does nothing
-  - nullify: replaces all IP addresses with 0.0.0.0
-  - table
-- Table method:
-  - Define subnets to be anonymized using filters
-  - Filters are then saved to a map file to be able to reconstruct the original PCAP file if required
-  - How to define a filter:
-    - subnet/netmask/xformmask
-  - Example:
-    - 192.168.0.0/0xffff0000/0xffff
+| Changed Fields       | Change Approach                | Use Cases                      |
+| -------------------- | ------------------------------ | ------------------------------ |
+| IP Address (none)    | does nothing                   | default behavior               |
+| IP Address (nullify) | changes addresses to 0.0.0.0   | default anonymization behavior |
+| IP Address (table)   | randomizes subnet IP addresses |                                |

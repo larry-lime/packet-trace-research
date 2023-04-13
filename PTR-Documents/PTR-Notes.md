@@ -18,6 +18,7 @@
 
 #### IP Subnets
 
+[Subnetting & Subnet Masks Explained](http://www.steves-internet-guide.com/subnetting-subnet-masks-explained/)
 [What is a subnet? | How subnetting works](https://www.cloudflare.com/learning/network-layer/what-is-a-subnet/)
 
 ### ICMP Information
@@ -116,6 +117,84 @@ The output anonymized pcap file is the same as if using our actual IP address. T
 
 - [Truncating Payloads and Anonymizing PCAP files](https://isc.sans.edu/diary/Truncating+Payloads+and+Anonymizing+PCAP+files/23990)
 - [Berkely Packet Filter](https://en.wikipedia.org/wiki/Berkeley_Packet_Filter)
+
+#### Anonymization Policy
+
+- Rationale:
+  - Secure alternative to tcpdump
+  - Create dump files with IP addresses obfuscated in a way such that the original traffic data is impossible to reconstruct
+- Three different methods:
+  - none: does nothing
+  - nullify: replaces all IP addresses with 0.0.0.0
+  - table
+- Table method:
+  - Define subnets to be anonymized using filters
+  - Filters are then saved to a map file to be able to reconstruct the original PCAP file if required
+  - How to define a filter:
+    - subnet/netmask/xformmask
+    -
+  - Example:
+    - 192.168.0.0/0xffff0000/0xffff
+
+#### Copilot Labs Explaination
+
+Explain the following `encode_table()` function in `encode_table.c`
+
+```c
+void encode_table (uint32_t *ip)
+{
+  int i;
+
+  /* Squint real hard and it makes sense, I promise */
+  for (i = 0; networks[i].subnet != 0; i++) {
+    if (((*ip & networks[i].netmask) ^ networks[i].subnet) == 0) {
+      *ip = ((*ip & ~networks[i].xformmask)
+	     | (networks[i].table[ntohl(*ip & networks[i].xformmask)]));
+    }
+  }
+}
+```
+
+1. The first for loop goes through each network in the networks[] array
+   until it finds one whose subnet is 0. This is a sentinel value
+   indicating the end of the array.
+2. The if clause is the actual check for whether the ip address
+   belongs to the network we are currently looking at. The
+   networks[i].netmask is a mask with 1's in the bits that are
+   significant to the subnet. The networks[i].subnet is the subnet
+   address with the bits that are not significant to the subnet set to 0. The expression
+   (\*ip & networks[i].netmask) ^ networks[i].subnet
+   will give 0 if the ip address belongs to the subnet. The
+   parentheses are needed to force the bitwise and to be performed
+   first.
+3. The else clause is a little more complex. If the ip address does
+   not belong to the network we are currently looking at, we need to
+   see if it belongs to any of the other networks. This is accomplished
+   by the continue statement which causes the loop to go back to the
+   top and look at the next network.
+4. If the ip address does belong to the network, we need to do the
+   transformation. The following lines
+   *ip = ((*ip & ~networks[i].xformmask)
+   | (networks[i].table[ntohl(\*ip & networks[i].xformmask)]));
+   perform the transformation. The first part sets all the bits that
+   are not significant to the subnet in the ip address to 0. The second
+   part takes the bits that are significant to the subnet (those that
+   were not set to 0 in the first part) and uses them as an index into
+   the transformation table for the network.
+5. The table is an array of 32 bit integers (uint32_t) indexed by the
+   significant subnet bits. The table is created by the decode_table()
+   function.
+6. The ntohl() function converts from network byte order (big endian)
+   to host byte order (little endian). The reason for this is that the
+   transformation table is created by reading the ip addresses from a
+   file. The file is in host byte order (because it was created on
+   the host), but the ip addresses in the table are in network byte
+   order so that they can be compared to the ip addresses in network
+   byte order. (The ip addresses in the table are in network byte
+   order, but when they are read from the file, they are in host byte
+   order.) It is also possible to create the table by reading the
+   ip addresses in network byte order, but that would be more complex
+   and would require a separate program to create the table.
 
 #### Tool Overview
 
