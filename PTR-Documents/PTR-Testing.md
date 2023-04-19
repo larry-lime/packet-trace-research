@@ -171,7 +171,7 @@ Where options consist of:
 
 Command:
 
-#### none encoding
+#### `none` encoding
 
 Produces an output file with IP addresses and all other fields unchanged
 
@@ -179,7 +179,7 @@ Produces an output file with IP addresses and all other fields unchanged
 tcpurify -r <path-to-input-*.pcapng> -w <path-to-output.*.pcapng>  none
 ```
 
-#### nullify encoding
+#### `nullify` encoding
 
 Produces an output file with all source and destination IP addresses changed to 0.0.0.0.
 
@@ -187,10 +187,16 @@ Produces an output file with all source and destination IP addresses changed to 
 tcpurify -r <path-to-input-*.pcapng> -w <path-to-output.*.pcapng>  nullify
 ```
 
-#### table encoding
+#### `table` encoding
 
 Specifies a range of subnets to obfuscate along with the bits you wish to randomize.
 
 ```shell
-tcpurify -r <path-to-input-*.pcapng> -w <path-to-output.*.pcapng>  none
+tcpurify -r <path-to-input-*.pcapng> -w <path-to-output>*.pcapng> table 192.168.200.0/0xffffff00/0xff mapfile=test.map
+```
+
+Example usage:
+
+```shell
+tcpurify -r <path-to-input-*.pcapng> -w <path-to-output>*.pcapng> table subnet/netmask/xformmask mapfile=<filename.map>
 ```
