@@ -138,87 +138,45 @@ The output anonymized pcap file is the same as if using our actual IP address. T
 
 #### Function Explaination
 
-##### `encode_table()`
+- The actual randomization of the IP addresses is done in this `shuffle()` function.
 
-Explain the following `encode_table()` function in `encode_table.c`
+  ```c
+  /*
+   * If you don't recognize this, you shouldn't be reading this source.  ;-)
+   */
+  static void swap (uint32_t *table, uint32_t x, uint32_t y) {
+    uint32_t temp;
 
-```c
-void encode_table (uint32_t *ip)
-{
-  int i;
+    temp = table[x];
+    table[x] = table[y];
+    table[y] = temp;
+  }
 
-  /* Squint real hard and it makes sense, I promise */
-  for (i = 0; networks[i].subnet != 0; i++) {
-    if (((*ip & networks[i].netmask) ^ networks[i].subnet) == 0) {
-      *ip = ((*ip & ~networks[i].xformmask)
-	     | (networks[i].table[ntohl(*ip & networks[i].xformmask)]));
+  /*
+   * A simple randomization function that shuffles entries 1 .. size - 2
+   * of the given table.  It leaves the first and last entries for the reasons
+   * discussed in the accompanying README file.
+   */
+  static void shuffle (uint32_t *table, uint32_t size) {
+    uint32_t i, j, newpos;
+
+    srand (time (NULL));
+    for (i = 0; i < 3; i++) {
+      for (j = 1; j < size - 1; j++) {
+        newpos = 1 + (int)((double)(size - 2) * rand() / (RAND_MAX + 1.0));
+        swap (table, j, newpos);
+      }
     }
   }
-}
-```
+  ```
 
-1. The first for loop goes through each network in the `networks[]` array
-   until it finds one whose subnet is 0. This is a sentinel value
-   indicating the end of the array.
-2. The if clause is the actual check for whether the ip address
-   belongs to the network we are currently looking at. The
-   `networks[i].netmask` is a mask with 1's in the bits that are
-   significant to the subnet. The `networks[i].subnet` is the subnet
-   address with the bits that are not significant to the subnet set to 0. The expression
-   (\*ip & networks[i].netmask) ^ networks[i].subnet
-   will give 0 if the ip address belongs to the subnet. The
-   parentheses are needed to force the bitwise and to be performed
-   first.
-3. The else clause is a little more complex. If the ip address does
-   not belong to the network we are currently looking at, we need to
-   see if it belongs to any of the other networks. This is accomplished
-   by the continue statement which causes the loop to go back to the
-   top and look at the next network.
-4. If the ip address does belong to the network, we need to do the
-   transformation. The following lines
-   `*ip = ((*ip & ~networks[i].xformmask)
-| (networks[i].table[ntohl(\*ip & networks[i].xformmask)]))`;
-   perform the transformation. The first part sets all the bits that
-   are not significant to the subnet in the ip address to 0. The second
-   part takes the bits that are significant to the subnet (those that
-   were not set to 0 in the first part) and uses them as an index into
-   the transformation table for the network.
-5. The table is an array of 32 bit integers (uint32_t) indexed by the
-   significant subnet bits. The table is created by the decode_table()
-   function.
-6. The ntohl() function converts from network byte order (big endian)
-   to host byte order (little endian). The reason for this is that the
-   transformation table is created by reading the ip addresses from a
-   file. The file is in host byte order (because it was created on
-   the host), but the ip addresses in the table are in network byte
-   order so that they can be compared to the ip addresses in network
-   byte order. (The ip addresses in the table are in network byte
-   order, but when they are read from the file, they are in host byte
-   order.) It is also possible to create the table by reading the
-   ip addresses in network byte order, but that would be more complex
-   and would require a separate program to create the table.
-
-##### `table_create()`
-
-##### Entire File
-The given source code seems to be a part of a program called "tcpurify". This program anonymizes IP addresses by mapping them to a different value. It takes input in the form of "triplets" in the format of "subnet/netmask/xformmask". The subnet is the IP address to be anonymized, netmask specifies the bits that define the network, and xformmask specifies the bits to randomize.
-
-In the `main` function, the input argument is parsed and stored in the `networks` array. Then, the `table_create` function is called for each network to create a random mapping table. The created tables are then written to a temporary file or a specified file if provided.
-
-When the program is run with an IP address, it looks for the network that the IP address belongs to by comparing the address with the subnet and netmask of each network. Once the corresponding network is found, the program looks up the corresponding value in the mapping table for that network to get the anonymized value.
-
-In the `squish` function, the given IP address is masked with the given netmask to remove the host portion and retain only the network portion. The `unsquish` function does the opposite by expanding the masked address back to its original value.
-
-The `table_compress` and `table_expand` functions are used to compress and expand the mapping table to save space in the file where the tables are stored.
-
-Given the input IP address 192.168.200.135 and netmask 255.255.255.0, the following steps are taken to anonymize it:
-
-1. Parse the triplet "192.168.200.0/24/8" to get the subnet, netmask, and xformmask values.
-2. Compare the input address with the subnet and netmask of each network in the `networks` array to find the corresponding network. In this case, the network with subnet 192.168.200.0 and netmask 255.255.255.0 will be selected.
-3. Mask the input address with the netmask to get the network portion of the address. In this case, 192.168.200.0 will be obtained.
-4. Randomize the last 8 bits of the network portion using the xformmask value. In this case, the last 8 bits of 192.168.200.0 will be randomized to obtain a new value in the range of 0 to 255. Let's say the randomized value is 25.
-5. Replace the randomized last octet of the network portion with the randomized value to get the anonymized address. In this case, the anonymized address will be 192.168.200.25.
-
+- Almost all of the "interesting" anonymization happens in the `encode_table.c` file.
+- There is also the `encode_none.c` and `encode_nullify.c` files that are used to handle the `none` and `nullify` options respectively.
+- Within the `encode_table.c` file, I'd say, the important functions to keep in mind are the following:
+    - `table_write()` and `table_read()`- These are the functions that are used to write and read the table to and from a file
+  - `shuffle()` - This is the function that actually randomizes the IP addresses. It's called from within `table_create()`
+  - `table_create()` - This takes a properly filled-out Network structure and creates a random table in network->table for address translation.
+  - `squish()` and `unsquish()`- Are the functions that are used to compress and decompress IP addresses in the table. Its interesting
 
 #### Tool Overview
 
