@@ -90,8 +90,33 @@ TCP & UDP
 
 ## TCPurify
 
-| Changed Fields       | Change Approach                | Use Cases                      |
-| -------------------- | ------------------------------ | ------------------------------ |
-| IP Address (none)    | does nothing                   | default behavior               |
-| IP Address (nullify) | changes addresses to 0.0.0.0   | default anonymization behavior |
-| IP Address (table)   | randomizes subnet IP addresses |                                |
+| Changed Fields       | Change Approach                                                             | Use Cases                                                       |
+| -------------------- | --------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| IP Address (none)    | does nothing                                                                | default behavior                                                |
+| IP Address (nullify) | changes addresses to 0.0.0.0                                                | default anonymization behavior                                  |
+| IP Address (table)   | [IP Address (table) - Change Approach](#ip-address-table---change-approach) | [IP Address (table) - Use Cases](#ip-address-table---use-cases) |
+
+### Change Approach Extended
+
+#### IP Address (table) - Change Approach:
+
+- Randomizes the host bits of the IP address
+- Uses the network mask to determine which bits belong to network, host, and subnet
+- Creates a map file that can be used to restore the original host address
+- Anonymization Algorithm:
+  - `shuffle()` function accomplishes the anonymization
+  - Uses `srand()` function to seed the pseudo-random number generator with current time
+  - The bits from 1 to size -2 are shuffled three times
+  - A new position is calculated using `rand()`
+  - The corresponding bits are then swapped using the `swap` function accessing the table
+
+### Use Cases Extended
+
+#### IP Address (table) - Use Cases:
+
+- Provide a way to pseudo-randomly anonymize IP addresses while still maintaining their uniqueness
+- Obviously if the IP address bits were purely randomly anonymized without retaining uniqueness, that would remain all research value from the packet captures. It would be the same as setting all bits to zero
+- The IP addresses are encoded into a table that randomizes the bits, obfuscating the host address, while still allowing for consistent mapping between IP addresses and their encoded values
+- In this way, the anonymized trace can be restored using the map file by the user executing tcpurify
+  - This is useful in case security auditing demands that you restore the original IP address for analysis
+  - At the same time, This allows for statistical analysis to be performed on network traffic data while maintaining privacy and anonymity for the users whose traffic is being analyzed.

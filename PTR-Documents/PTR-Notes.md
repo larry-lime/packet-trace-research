@@ -136,7 +136,9 @@ The output anonymized pcap file is the same as if using our actual IP address. T
   - Example:
     - 192.168.0.0/0xffff0000/0xffff
 
-#### Copilot Labs Explaination
+#### Function Explaination
+
+##### `encode_table()`
 
 Explain the following `encode_table()` function in `encode_table.c`
 
@@ -155,13 +157,13 @@ void encode_table (uint32_t *ip)
 }
 ```
 
-1. The first for loop goes through each network in the networks[] array
+1. The first for loop goes through each network in the `networks[]` array
    until it finds one whose subnet is 0. This is a sentinel value
    indicating the end of the array.
 2. The if clause is the actual check for whether the ip address
    belongs to the network we are currently looking at. The
-   networks[i].netmask is a mask with 1's in the bits that are
-   significant to the subnet. The networks[i].subnet is the subnet
+   `networks[i].netmask` is a mask with 1's in the bits that are
+   significant to the subnet. The `networks[i].subnet` is the subnet
    address with the bits that are not significant to the subnet set to 0. The expression
    (\*ip & networks[i].netmask) ^ networks[i].subnet
    will give 0 if the ip address belongs to the subnet. The
@@ -174,8 +176,8 @@ void encode_table (uint32_t *ip)
    top and look at the next network.
 4. If the ip address does belong to the network, we need to do the
    transformation. The following lines
-   *ip = ((*ip & ~networks[i].xformmask)
-   | (networks[i].table[ntohl(\*ip & networks[i].xformmask)]));
+   `*ip = ((*ip & ~networks[i].xformmask)
+| (networks[i].table[ntohl(\*ip & networks[i].xformmask)]))`;
    perform the transformation. The first part sets all the bits that
    are not significant to the subnet in the ip address to 0. The second
    part takes the bits that are significant to the subnet (those that
@@ -195,6 +197,28 @@ void encode_table (uint32_t *ip)
    order.) It is also possible to create the table by reading the
    ip addresses in network byte order, but that would be more complex
    and would require a separate program to create the table.
+
+##### `table_create()`
+
+##### Entire File
+The given source code seems to be a part of a program called "tcpurify". This program anonymizes IP addresses by mapping them to a different value. It takes input in the form of "triplets" in the format of "subnet/netmask/xformmask". The subnet is the IP address to be anonymized, netmask specifies the bits that define the network, and xformmask specifies the bits to randomize.
+
+In the `main` function, the input argument is parsed and stored in the `networks` array. Then, the `table_create` function is called for each network to create a random mapping table. The created tables are then written to a temporary file or a specified file if provided.
+
+When the program is run with an IP address, it looks for the network that the IP address belongs to by comparing the address with the subnet and netmask of each network. Once the corresponding network is found, the program looks up the corresponding value in the mapping table for that network to get the anonymized value.
+
+In the `squish` function, the given IP address is masked with the given netmask to remove the host portion and retain only the network portion. The `unsquish` function does the opposite by expanding the masked address back to its original value.
+
+The `table_compress` and `table_expand` functions are used to compress and expand the mapping table to save space in the file where the tables are stored.
+
+Given the input IP address 192.168.200.135 and netmask 255.255.255.0, the following steps are taken to anonymize it:
+
+1. Parse the triplet "192.168.200.0/24/8" to get the subnet, netmask, and xformmask values.
+2. Compare the input address with the subnet and netmask of each network in the `networks` array to find the corresponding network. In this case, the network with subnet 192.168.200.0 and netmask 255.255.255.0 will be selected.
+3. Mask the input address with the netmask to get the network portion of the address. In this case, 192.168.200.0 will be obtained.
+4. Randomize the last 8 bits of the network portion using the xformmask value. In this case, the last 8 bits of 192.168.200.0 will be randomized to obtain a new value in the range of 0 to 255. Let's say the randomized value is 25.
+5. Replace the randomized last octet of the network portion with the randomized value to get the anonymized address. In this case, the anonymized address will be 192.168.200.25.
+
 
 #### Tool Overview
 

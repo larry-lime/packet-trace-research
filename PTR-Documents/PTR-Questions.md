@@ -21,6 +21,8 @@
   A: No, it is not possible to determine the netmask of a network just by analyzing a PCAP file. A PCAP file is simply a packet capture file that contains recorded network traffic, and it does not provide information about the network topology or subnetting.
   The netmask is a configuration parameter that is set on a network device, such as a router or a computer, to define the network address range of a particular subnet. It is used to determine which part of an IP address represents the network address and which part represents the host address.
   To determine the netmask of a network, you need to have access to the configuration of the network device that manages that network or obtain information from the network administrator.
+- What is host byte order versus network byte order?
+- What does the `htonl()` function do?
 
 ## Wireshark
 
