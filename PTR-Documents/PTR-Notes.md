@@ -43,17 +43,60 @@ You are also able to use tcpdump to intercept and displays the communication of 
 
 ### TCPdpriv
 
+#### Resources
+
 #### Anonymization Policy
 
 Important flags to keep in mind:
 
 - -A: IP Address
+  - Level 0: Maps different addresses to integers (counting from 1)
+  - Level 1: Maps the upper and lower 16 bits, separately, to integers (counting from 1)
+  - Level 2: Maps each byte of the address separately (again, counting from 1) with each byte map independent
+  - Level 50: ...
+  - Level 99:
 - -C: Classness of IP
+  - Level 0: no class information is carried through
+  - Level 1: Class A addresses are mapped to Class A addresses
+  - Level 2: Additionally, Class B addresses are mapped to Class B addresses
+  - Level 3: Additionally, Class C addresses are mapped to Class C addresses
+  - Level 4: Additionally, Class D (mulitcast) addresses are mapped to Class D addresses
 - -M: Multicast address mapping
+  - Level 0: Implies map using -A and -C values
+  - Level 10: Passes multicast addresses in globally-scoped datagrams through unchanged
+  - Level 20: Passes multicast addresses in continent-local datagrams through unchanged
+  - Level 70: Passes multicast addresses in site-local datagrams through unchanged
+  - Level 80: Passes multicast addresses in link-local datagrams through unchanged
+  - Level 90: Passes multicast addresses in node-local datagrams through unchanged
 - -P: TCP & UDP port number mapping
+  - Level 0: Map 16-bit port numbers to a single integer
+  - Level 1: Maps each 8-bit byte in the same port number to a single integer
+  - Level 99: Passes port numbers through unchanged
 - -S: IP & TCP options mapping
+  - Level 0: Replaces all options with NOPs (0x01 in both cases)
+  - Level 1: Leaves all the options unchanged
 - -T: TCP port numbers mapping
+  - Set mappings for only tcp port numbers
+  - Same usage as -P
 - -U: UDP port numbers mapping
+  - Set mappings for only udp port numbers
+  - Same usage as -P
+
+Additional traits of tcpdpriv
+
+- When the header is changed, the checksum for that header is also updated to reflect the changed header data values
+
+#### Function Explanation
+
+#### Tool Overview
+
+- The tcpdpriv creator provides their "Thoughts on How to Mount an Attack on tcpdpriv's ``-A50'' Option..."
+- Something noteable is that, tcpdpriv removes sensitive information from a packet trace, replacing it with contrived information. And (unlike tcpurify) the sensitive information CANNOT be reconstructed from the sensitive information
+- Unlike tcpurify, tcpdpriv provies many options for different levels of privacy/security. Generally, the smaller the number, the more secure
+  - The number (0) is the default for each of the options and is the most secure
+  - The number (99) generally means "release the information as is"
+
+#### Missing Options
 
 ### TCPmkpub
 
@@ -136,7 +179,7 @@ The output anonymized pcap file is the same as if using our actual IP address. T
   - Example:
     - 192.168.0.0/0xffff0000/0xffff
 
-#### Function Explaination
+#### Function Explanation
 
 - The actual randomization of the IP addresses is done in this `shuffle()` function.
 
@@ -173,7 +216,7 @@ The output anonymized pcap file is the same as if using our actual IP address. T
 - Almost all of the "interesting" anonymization happens in the `encode_table.c` file.
 - There is also the `encode_none.c` and `encode_nullify.c` files that are used to handle the `none` and `nullify` options respectively.
 - Within the `encode_table.c` file, I'd say, the important functions to keep in mind are the following:
-    - `table_write()` and `table_read()`- These are the functions that are used to write and read the table to and from a file
+  - `table_write()` and `table_read()`- These are the functions that are used to write and read the table to and from a file
   - `shuffle()` - This is the function that actually randomizes the IP addresses. It's called from within `table_create()`
   - `table_create()` - This takes a properly filled-out Network structure and creates a random table in network->table for address translation.
   - `squish()` and `unsquish()`- Are the functions that are used to compress and decompress IP addresses in the table. Its interesting
@@ -187,6 +230,8 @@ The output anonymized pcap file is the same as if using our actual IP address. T
   - nullify
   - table
 - 'Table' mode requires an extra argument, 'mapfile' which points to a filename that will contain the mappings
+- Something of note: If a map file is specified and no triplets (subnet/netmask/xformmask) are specified in the command line, tpurify will read the map file and initialize the mapping table
+  - Does this mean that you can reuse the same map file for multiple anonymizations?
 
 #### Missing Options
 

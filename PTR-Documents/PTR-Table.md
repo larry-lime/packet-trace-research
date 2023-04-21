@@ -4,15 +4,14 @@
 
 ## TCPdpriv Anonymization Policy
 
-| Changed Fields    | Change Approach | Use Cases |
-| ----------------- | --------------- | --------- |
-| IP Address        |                 |           |
-| IP Classness      |                 |           |
-| Multicast Address |                 |           |
-| IP Options        |                 |           |
-| TCP Options       |                 |           |
-| TCP Port Mapping  |                 |           |
-| UDP Port Mapping  |                 |           |
+| Changed Fields    | Change Approach                                                         | Use Cases |
+| ----------------- | ----------------------------------------------------------------------- | --------- |
+| IP Address        | [IP Address Change Approach](#ip-address)                               |
+| IP Classness      | [IP Classness Change Approach](#ip-classness)                           |
+| Multicast Address | [Multicast Address Mapping Change Approach](#multicast-address-mapping) |
+| IP & TCP Options  | [IP & TCP Options Change Approach](#ip--tcp-options)                    |
+| TCP Port Mapping  | [TCP Port Mapping Change Approach](#tcp-port-mapping)                   |
+| UDP Port Mapping  | [UDP Port Mapping Change Approach](#udp-port-mapping)                   |
 
 The following is in order in which they appear in the fields of the tool
 
@@ -26,6 +25,51 @@ IP
 - TCP & UDP Port Mapping (together)
 - TCP Port Mapping
 - UDP Port Mapping
+
+### Change Approach Extended
+
+#### IP Address
+
+- Level 0: Maps different addresses to integers (counting from 1)
+- Level 1: Maps the upper and lower 16 bits, separately, to integers (counting from 1)
+- Level 2: Maps each byte of the address separately (again, counting from 1) with each byte map independent
+- Level 50: ...
+- Level 99:
+
+#### IP Classness
+
+- Level 0: no class information is carried through
+- Level 1: Class A addresses are mapped to Class A addresses
+- Level 2: Additionally, Class B addresses are mapped to Class B addresses
+- Level 3: Additionally, Class C addresses are mapped to Class C addresses
+- Level 4: Additionally, Class D (mulitcast) addresses are mapped to Class D addresses
+
+#### Multicast Address Mapping
+
+- Level 0: Implies map using -A and -C values
+- Level 10: Passes multicast addresses in globally-scoped datagrams through unchanged
+- Level 20: Passes multicast addresses in continent-local datagrams through unchanged
+- Level 70: Passes multicast addresses in site-local datagrams through unchanged
+- Level 80: Passes multicast addresses in link-local datagrams through unchanged
+- Level 90: Passes multicast addresses in node-local datagrams through unchanged
+
+#### IP & TCP Options
+
+- Level 0: Map 16-bit port numbers to a single integer
+- Level 1: Maps each 8-bit byte in the same port number to a single integer
+- Level 99: Passes port numbers through unchanged
+
+#### TCP Port Mapping
+
+- Set mappings for only tcp port numbers
+- Same usage as -P
+
+#### UDP Port Mapping
+
+- Set mappings for only udp port numbers
+- Same usage as -P
+
+### Use Cases Extended
 
 ## TCPmkpub Anonymization Policy
 
@@ -90,11 +134,11 @@ TCP & UDP
 
 ## TCPurify
 
-| Changed Fields       | Change Approach                                                             | Use Cases                                                       |
-| -------------------- | --------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| IP Address (none)    | does nothing                                                                | default behavior                                                |
-| IP Address (nullify) | changes addresses to 0.0.0.0                                                | default anonymization behavior                                  |
-| IP Address (table)   | [IP Address (table) - Change Approach](#ip-address-table---change-approach) | [IP Address (table) - Use Cases](#ip-address-table---use-cases) |
+| Changed Fields       | Change Approach                                                       | Use Cases                                                               |
+| -------------------- | --------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| IP Address (none)    | does nothing                                                          | default behavior                                                        |
+| IP Address (nullify) | changes addresses to 0.0.0.0                                          | default anonymization behavior                                          |
+| IP Address (table)   | [pseudo-randomizes IP addresses](#ip-address-table---change-approach) | [maintain uniquness, reconstructability](#ip-address-table---use-cases) |
 
 ### Change Approach Extended
 

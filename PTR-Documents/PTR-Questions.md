@@ -5,6 +5,7 @@
 - Is the "Change Approach" field in comparison table is the same thing as anon policy?
 
 ## TCPdpriv
+- What is a NOP? (Ex. 0x01)
 
 ## TCPmkpub
 
@@ -22,7 +23,10 @@
   The netmask is a configuration parameter that is set on a network device, such as a router or a computer, to define the network address range of a particular subnet. It is used to determine which part of an IP address represents the network address and which part represents the host address.
   To determine the netmask of a network, you need to have access to the configuration of the network device that manages that network or obtain information from the network administrator.
 - What is host byte order versus network byte order?
+  - This is just the host address versus the network address
 - What does the `htonl()` function do?
+- Something of note: If a map file is specified and no triplets (subnet/netmask/xformmask) are specified in the command line, tpurify will read the map file and initialize the mapping table
+  - Does this mean that you can reuse the same map file for multiple anonymizations?
 
 ## Wireshark
 
