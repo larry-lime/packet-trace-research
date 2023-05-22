@@ -83,15 +83,15 @@ You are also able to use tcpdump to intercept and displays the communication of 
   - Same usage as -P
 
 ##### Understanding the flags
-- [X] Understand IP Address mapping
-- [X] Understand Classness of IP mapping
+
+- [x] Understand IP Address mapping
+- [x] Understand Classness of IP mapping
 - [ ] Understanding Multicast address mapping
   - [ ] What is multicast?
   - [ ] How is it mapped?
 - [ ] Understanding TCP & UDP port number mapping
   - [ ] What is a port number?
   - [ ] How is it mapped?
-
 
 Additional traits of tcpdpriv
 
