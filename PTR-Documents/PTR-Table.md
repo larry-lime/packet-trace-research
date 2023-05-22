@@ -21,7 +21,7 @@
 - Level 1: Maps the upper and lower 16 bits, separately, to integers (counting from 1)
 - Level 2: Maps each byte of the address separately (again, counting from 1) with each byte map independent
 - Level 50: ...
-- Level 99:
+- Level 99: ...
 
 #### IP Classness
 
@@ -57,6 +57,26 @@
 - Same usage as -P
 
 ### Use Cases Extended
+
+#### IP Address
+
+The IP address mapping involves converting IP addresses into integers or manipulating different parts of the address independently. This provides a way to obfuscate the original IP addresses while still preserving certain properties or relationships for analysis purposes.
+
+The range of levels from 0 to 99 can be seen as a continuum of trade-offs between privacy and utility.
+
+For example, Level 0 maps all the bits in the address to a single integer, and 99 passes the address as is. Intermediate levels of mapping allow for more granular control.
+
+#### IP Classness
+
+IP Classness (Levels 0-4): This feature allows preserving the class information of IP addresses during mapping. It can be useful when analyzing network traffic based on different IP address classes, such as Class A, Class B, Class C, or multicast addresses. By maintaining the class information, the anonymized traces can still provide insights into the distribution and behavior of different IP address classes.
+
+#### Multicast Address
+
+Multicast Address Mapping (Levels 0-90): Multicast addresses are handled separately to ensure appropriate treatment based on the scope of the address. Different levels of mapping determine whether multicast addresses are changed or left unchanged based on their scope, such as globally-scoped, continent-local, site-local, link-local, or node-local datagrams. This enables the anonymization of multicast traffic while maintaining the necessary distinctions for analysis.
+
+#### IP & TCP Options
+
+IP & TCP Options: This feature involves mapping IP and TCP options within the packet headers. Different levels of mapping determine the granularity at which the options are anonymized. For example, at Level 0, port numbers are mapped to a single integer, which can be useful for statistical analysis of port usage. Higher levels allow preserving more information by mapping each byte or passing the port numbers through unchanged (Level 99).
 
 ## TCPmkpub Anonymization Policy
 

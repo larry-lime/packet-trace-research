@@ -47,7 +47,7 @@ You are also able to use tcpdump to intercept and displays the communication of 
 
 #### Anonymization Policy
 
-Important flags to keep in mind:
+##### Important flags to keep in mind:
 
 - -A: IP Address
   - Level 0: Maps different addresses to integers (counting from 1)
@@ -81,6 +81,17 @@ Important flags to keep in mind:
 - -U: UDP port numbers mapping
   - Set mappings for only udp port numbers
   - Same usage as -P
+
+##### Understanding the flags
+- [X] Understand IP Address mapping
+- [X] Understand Classness of IP mapping
+- [ ] Understanding Multicast address mapping
+  - [ ] What is multicast?
+  - [ ] How is it mapped?
+- [ ] Understanding TCP & UDP port number mapping
+  - [ ] What is a port number?
+  - [ ] How is it mapped?
+
 
 Additional traits of tcpdpriv
 
