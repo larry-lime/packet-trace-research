@@ -13,19 +13,6 @@
 | TCP Port Mapping  | [TCP Port Mapping Change Approach](#tcp-port-mapping)                   |
 | UDP Port Mapping  | [UDP Port Mapping Change Approach](#udp-port-mapping)                   |
 
-The following is in order in which they appear in the fields of the tool
-
-IP
-
-- IP Address
-- IP Classness
-- Multicast Address Mapping
-- IP Options
-- TCP Options
-- TCP & UDP Port Mapping (together)
-- TCP Port Mapping
-- UDP Port Mapping
-
 ### Change Approach Extended
 
 #### IP Address
@@ -142,7 +129,7 @@ TCP & UDP
 
 ### Change Approach Extended
 
-#### IP Address (table) - Change Approach:
+#### IP Address (table) - Change Approach
 
 - Randomizes the host bits of the IP address
 - Uses the network mask to determine which bits belong to network, host, and subnet
@@ -156,7 +143,7 @@ TCP & UDP
 
 ### Use Cases Extended
 
-#### IP Address (table) - Use Cases:
+#### IP Address (table) - Use Cases
 
 - Provide a way to pseudo-randomly anonymize IP addresses while still maintaining their uniqueness
 - Obviously if the IP address bits were purely randomly anonymized without retaining uniqueness, that would remain all research value from the packet captures. It would be the same as setting all bits to zero

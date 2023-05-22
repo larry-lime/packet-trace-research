@@ -16,7 +16,7 @@
 - [The Devil and Packet Trace Anonymization](https://www.icir.org/enterprise-tracing/devil-ccr-jan06.pdf)
 - [Modified Code](http://www.cs.umd.edu/projects/wifidelity/sigcomm08_traces/#anon)
 
-## TCPurify:
+## TCPurify
 
 - [TCPurity Installation](https://web.archive.org/web/20140203210616/irg.cs.ohiou.edu/~eblanton/tcpurify/)
 - [TCPurity Usage](https://isc.sans.edu/diary/Truncating+Payloads+and+Anonymizing+PCAP+files/23990)

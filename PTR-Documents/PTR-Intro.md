@@ -29,8 +29,8 @@ Netcat uses TCP and UDP connections to read and write to a network
 
 ### Tasks
 
-- [x] Complete Getting Started
-- [x] Complete HTTP Lab
+- [X] Complete Getting Started
+- [X] Complete HTTP Lab
 - [ ] Complete DNS Lab
 - Look into section 2.4 of the textbook for more information
 - [ ] Complete TCP Lab

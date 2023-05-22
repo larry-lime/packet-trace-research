@@ -23,13 +23,13 @@ make
 
 ### Check Binary is executable
 
-#### Command:
+#### Command
 
 ```shell
 sudo ./tcpdpriv
 ```
 
-#### Expected Ouput:
+#### Expected Ouput
 
 ```
 [sudo] password for larrylime:
@@ -68,6 +68,7 @@ Expected Output:
 ### Set Enterprise Network
 
 1. Get current ip address
+
    ```shell
    curl ifconfig.me
    ```
@@ -119,6 +120,7 @@ TODO: RETURN HERE
    ```
 
 2. Run `tcpmkpub` with the correct md5 digest
+
    ```shell
    tcpmkpub -k cd9e459ea708a948d5c2f5a6ca8838cf -w <path-to-output.*.pcapng> <path-to-input-*.pcapng>
    ```
