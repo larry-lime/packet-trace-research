@@ -10,12 +10,10 @@
 | IP Classness      | [IP Classness Change Approach](#ip-classness)                           | [IP Classness Use Cases](#ip-classness-use-cases)                           |
 | Multicast Address | [Multicast Address Mapping Change Approach](#multicast-address-mapping) | [Multicast Address Mapping Use Cases](#multicast-address-mapping-use-cases) |
 | IP & TCP Options  | [IP & TCP Options Change Approach](#ip--tcp-options)                    | [IP & TCP Options Use Cases](#ip--tcp-options-use-cases)                    |
-| TCP Port Mapping  | [TCP Port Mapping Change Approach](#tcp-port-mapping)                   | [TCP Port Mapping Use Cases](#tcp-port-mapping-use-cases)                   |
-| UDP Port Mapping  | [UDP Port Mapping Change Approach](#udp-port-mapping)                   | [UDP Port Mapping Use Cases](#udp-port-mapping-use-cases)                   |
 
 ### Change Approach Extended
 
-#### IP Address
+#### IP Address (-A)
 
 - Level 0: Maps different addresses to integers (counting from 1)
 - Level 1: Maps the upper and lower 16 bits, separately, to integers (counting from 1)
@@ -23,7 +21,7 @@
 - Level 50: ...
 - Level 99: ...
 
-#### IP Classness
+#### IP Classness (-C)
 
 - Level 0: no class information is carried through
 - Level 1: Class A addresses are mapped to Class A addresses
@@ -31,7 +29,7 @@
 - Level 3: Additionally, Class C addresses are mapped to Class C addresses
 - Level 4: Additionally, Class D (mulitcast) addresses are mapped to Class D addresses
 
-#### Multicast Address Mapping
+#### Multicast Address Mapping (-M)
 
 - Level 0: Implies map using -A and -C values
 - Level 10: Passes multicast addresses in globally-scoped datagrams through unchanged
@@ -40,21 +38,16 @@
 - Level 80: Passes multicast addresses in link-local datagrams through unchanged
 - Level 90: Passes multicast addresses in node-local datagrams through unchanged
 
-#### IP & TCP Options
+#### TCP & UDP Port Mapping (-P)
+
+- Level 0: Maps 16-bit port numbers to a single integer
+- Level 1: Maps each 8-bit byte in the same port number to a single integer
+
+#### IP & TCP Options (-S)
 
 - Level 0: Map 16-bit port numbers to a single integer
 - Level 1: Maps each 8-bit byte in the same port number to a single integer
 - Level 99: Passes port numbers through unchanged
-
-#### TCP Port Mapping
-
-- Set mappings for only tcp port numbers
-- Same usage as -P
-
-#### UDP Port Mapping
-
-- Set mappings for only udp port numbers
-- Same usage as -P
 
 ### Use Cases Extended
 
@@ -74,17 +67,15 @@ IP Classness (Levels 0-4): This feature allows preserving the class information 
 
 Multicast Address Mapping (Levels 0-90): Multicast addresses are handled separately to ensure appropriate treatment based on the scope of the address. Different levels of mapping determine whether multicast addresses are changed or left unchanged based on their scope, such as globally-scoped, continent-local, site-local, link-local, or node-local datagrams. This enables the anonymization of multicast traffic while maintaining the necessary distinctions for analysis.
 
-#### IP & TCP Options Use Cases
-
-IP & TCP Options: This feature involves mapping IP and TCP options within the packet headers. Different levels of mapping determine the granularity at which the options are anonymized. For example, at Level 0, port numbers are mapped to a single integer, which can be useful for statistical analysis of port usage. Higher levels allow preserving more information by mapping each byte or passing the port numbers through unchanged (Level 99).
-
-#### TCP Port Mapping Use Cases
+#### TCP & UDP Port Mapping Use Cases
 
 TCP Port Mapping: This component specifically focuses on mapping TCP port numbers. It provides a way to anonymize TCP traffic while preserving certain mappings for specific port numbers. This can be useful when analyzing network activities based on different services or applications using distinct port numbers.
 
-#### UDP Port Mapping Use Cases
-
 UDP Port Mapping: Similar to TCP port mapping, this component focuses on anonymizing UDP port numbers while maintaining specific mappings for certain port numbers. UDP-based services or applications can be anonymized while still preserving the relationships between port numbers.
+
+#### IP & TCP Options Use Cases
+
+IP & TCP Options: This feature involves mapping IP and TCP options within the packet headers. Different levels of mapping determine the granularity at which the options are anonymized. For example, at Level 0, port numbers are mapped to a single integer, which can be useful for statistical analysis of port usage. Higher levels allow preserving more information by mapping each byte or passing the port numbers through unchanged (Level 99).
 
 ## TCPmkpub Anonymization Policy
 
